@@ -122,85 +122,13 @@ function findEpisode(token, userId, seriesId, seasonNum, episodeNum) {
 }
 
 function toStream(item, token, userId) {
-    return getSubtitles(token, userId, item.Id).then(subtitles => ({
+    return Promise.resolve({
         name: PROVIDER_ID,
         title: item.Name || "Emby Stream",
         url: `${EMBY_SERVER}/Videos/${item.Id}/stream?static=true&api_key=${token}`,
         quality: "Auto",
-        provider: PROVIDER_ID,
-        subtitles
-    }));
-}
-
-function getSubtitles(token, userId, itemId) {
-    const url = `${EMBY_SERVER}/Items/${itemId}/PlaybackInfo?UserId=${userId}&api_key=${token}`;
-    return fetch(url, { method: "POST" })
-        .then(readJson)
-        .then(data => buildSubtitleTracks(itemId, token, data))
-        .catch(() => []);
-}
-
-function buildSubtitleTracks(itemId, token, playbackInfo) {
-    const tracks = [];
-    const mediaSources = Array.isArray(playbackInfo && playbackInfo.MediaSources) ? playbackInfo.MediaSources : [];
-
-    mediaSources.forEach(source => {
-        const streams = Array.isArray(source.MediaStreams) ? source.MediaStreams : [];
-        streams
-            .filter(s => s && s.Type === "Subtitle")
-            .forEach(s => {
-                const index = Number(s.Index);
-                if (!Number.isFinite(index)) return;
-
-                const rawLanguage = getRawLanguageCode(s.Language, s.DisplayTitle);
-                const normalizedLanguage = normalizeLanguage(rawLanguage, s.DisplayTitle);
-                let subUrl = null;
-                if (s.DeliveryUrl) {
-                    subUrl = `${EMBY_SERVER}${s.DeliveryUrl}`;
-                    if (subUrl.indexOf("api_key=") === -1) {
-                        subUrl += (subUrl.indexOf("?") === -1 ? "?" : "&") + `api_key=${token}`;
-                    }
-                } else if (source.Id) {
-                    const codec = (s.Codec || "srt").toLowerCase();
-                    subUrl = `${EMBY_SERVER}/Videos/${itemId}/${source.Id}/Subtitles/${index}/Stream.${codec}?api_key=${token}`;
-                }
-
-                if (!subUrl) return;
-                tracks.push({
-                    lang: normalizedLanguage,
-                    language: rawLanguage,
-                    label: s.DisplayTitle || s.DisplayLanguage || (normalizedLanguage === "heb" ? "Hebrew" : normalizedLanguage.toUpperCase()),
-                    url: subUrl
-                });
-            });
+        provider: PROVIDER_ID
     });
-
-    // Deduplicate by URL.
-    const seen = new Set();
-    const deduped = [];
-    for (let i = 0; i < tracks.length; i++) {
-        const t = tracks[i];
-        if (seen.has(t.url)) continue;
-        seen.add(t.url);
-        deduped.push(t);
-    }
-    return deduped;
-}
-
-function getRawLanguageCode(lang, title) {
-    if (lang && String(lang).trim()) return String(lang).toLowerCase();
-    const raw = String(title || "").toLowerCase();
-    if (raw.includes("hebrew") || raw.includes("heb")) return "he";
-    return "und";
-}
-
-function normalizeLanguage(lang, title) {
-    const raw = `${lang || ""} ${title || ""}`.toLowerCase();
-    if (raw.includes("hebrew") || raw.includes("heb") || raw === "he" || raw.includes(" he ")) {
-        return "heb";
-    }
-    if (!lang) return "und";
-    return String(lang).toLowerCase();
 }
 
 function toNumberOrNull(value) {
