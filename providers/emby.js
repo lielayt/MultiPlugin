@@ -43,7 +43,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
                         return findEpisode(token, userId, series.Id, seasonNum, episodeNum)
                             .then(ep => {
                                 if (!ep) return [];
-                                return toStream(ep, token).then(stream => [stream]);
+                                return toStream(ep, token, userId).then(stream => [stream]);
                             });
                     });
             }
@@ -51,7 +51,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
             return findMovieByTmdb(token, userId, tmdbId)
                 .then(movie => {
                     if (movie) {
-                        return toStream(movie, token).then(stream => [stream]);
+                        return toStream(movie, token, userId).then(stream => [stream]);
                     }
 
                     console.log(`[${PROVIDER_NAME}] TMDB match failed, trying name search`);
@@ -145,14 +145,19 @@ function findEpisode(token, userId, seriesId, seasonNum, episodeNum) {
         });
 }
 
-function toStream(item, token) {
-    return Promise.resolve({
-        name: PROVIDER_NAME,
-        title: item.Name || "Emby Stream",
-        url: `${EMBY_SERVER}/Videos/${item.Id}/stream?static=true&api_key=${token}`,
-        quality: "Auto",
-        provider: PROVIDER_ID
-    });
+function toStream(item, token, userId) {
+    return getPlaybackInfo(item.Id, token, userId)
+        .then(info => {
+            const quality = info && info.width && info.height ? `${info.width}x${info.height}` : "Auto";
+
+            return {
+                name: PROVIDER_NAME,
+                title: item.Name || "Emby Stream",
+                url: `${EMBY_SERVER}/Videos/${item.Id}/stream?static=true&api_key=${token}`,
+                quality,
+                provider: PROVIDER_ID
+            };
+        });
 }
 
 function toNumberOrNull(value) {
@@ -191,6 +196,28 @@ function getTmdbTitle(tmdbId, mediaType) {
         })
         .catch(() => null);
 }
+
+function getPlaybackInfo(itemId, token, userId) {
+    const url = `${EMBY_SERVER}/emby/Items/${itemId}/PlaybackInfo` +
+                `?UserId=${userId}&StartTimeTicks=0&IsPlayback=false&AutoOpenLiveStream=false` +
+                `&X-Emby-Client=EmbyWeb&X-Emby-Device-Name=NodeJS&X-Emby-Device-Id=nodejs-1234` +
+                `&X-Emby-Client-Version=1.0.0&X-Emby-Token=${token}&reqformat=json`;
+
+    return fetch(url)
+        .then(readJson)
+        .then(data => {
+            if (!data || !data.MediaSources || !data.MediaSources.length) return null;
+
+            const source = data.MediaSources[0];
+            return {
+                width: source.Width || 0,
+                height: source.Height || 0,
+                bitrate: source.Bitrate || 0
+            };
+        })
+        .catch(() => null);
+}
+
 
 // Export for Nuvio
 if (typeof module !== "undefined" && module.exports) module.exports = { getStreams };
