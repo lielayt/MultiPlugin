@@ -1,14 +1,10 @@
 {
-  "providers": [
-    {
-      "id": "emby",
-      "name": "My Emby Server",
-      "description": "Streams from personal Emby",
-      "version": "1.0.0",
-      "author": "local",
-      "supportedTypes": ["movie", "tv","anime"],
-      "filename": "providers/emby.js",
-      "enabled": true
-    }
-  ]
+  "id": "emby",
+  "name": "My Emby Server",
+  "description": "Streams from my personal Emby server",
+  "version": "1.0.0",
+  "author": "You",
+  "supportedTypes": ["movie", "tv"],
+  "filename": "providers/emby.js",
+  "enabled": true
 }
