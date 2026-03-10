@@ -14,7 +14,7 @@
       ],
       "filename": "providers/emby.js",
       "enabled": true,
-      "logo": "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/emby.png",
+      "logo": "https://raw.githubusercontent.com/Viren070/AIOStreams/refs/heads/main/packages/frontend/public/logo.png",
       "contentLanguage": [
         "he",
         "en"
