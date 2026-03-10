@@ -154,7 +154,7 @@ function toStream(item, token, userId) {
             return {
                 name: PROVIDER_NAME,
                 title: item.Name || "Emby Stream",
-                url: `${EMBY_SERVER}/Videos/${item.Id}/stream?static=true&api_key=${token}`,
+                url: `${EMBY_SERVER}/Videos/${item.Id}/stream`,
                 quality,
                 provider: PROVIDER_ID,
                 logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/emby.png"
