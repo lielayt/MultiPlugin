@@ -149,7 +149,7 @@ function findEpisode(token, userId, seriesId, seasonNum, episodeNum) {
 function toStream(item, token, userId) {
     return getPlaybackInfo(item.Id, token, userId)
         .then(info => {
-            const quality = info && info.width && info.height ? `${info.width}x${info.height}` : "Auto";
+            const quality = info && info.width && info.height ? `${info.height}p` : "Auto";
 
             return {
                 name: PROVIDER_NAME,
@@ -182,7 +182,7 @@ function searchByName(token, name) {
 
     return fetch(url)
         .then(readJson)
-        .then(data => {console.log(data); data.Items && data.Items[0]});
+        .then(data => { data.Items && data.Items[0]});
 }
 
 function getTmdbTitle(tmdbId, mediaType) {

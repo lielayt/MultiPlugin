@@ -1,6 +1,6 @@
 const { getStreams } = require('./providers/emby.js');
 
 // Replace '872585' with a TMDB ID you verified exists in your Emby server
-getStreams('37854', 'tv', 4, 6).then(streams => {
+getStreams('1416', 'tv', 1, 6).then(streams => {
     console.log('Streams found:', streams);
 });
