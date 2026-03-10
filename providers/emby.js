@@ -3,7 +3,7 @@ const PROVIDER_ID = "emby";
 const PROVIDER_NAME = "Emby";
 const CREDENTIALS_GIST_RAW_URL = "https://gist.githubusercontent.com/lielayt/01e8aec73350f3d7b35469d69eb15dc6/raw";
 const CREDENTIALS_OWNER_LABEL = "Liel";
-const TM = "0e2acb22fd48bcb38470425d888b7bbb"
+const TM = "36fb162e5c4e8f206515ddf92070d434"
 let cachedCredentialsPromise = null;
 
 function getStreams(tmdbId, mediaType, season, episode) {
@@ -42,6 +42,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
 
                         return findEpisode(token, userId, series.Id, seasonNum, episodeNum)
                             .then(ep => {
+                                console.log(ep)
                                 if (!ep) return [];
                                 return toStream(ep, token, userId).then(stream => [stream]);
                             });
@@ -148,7 +149,6 @@ function findEpisode(token, userId, seriesId, seasonNum, episodeNum) {
 function toStream(item, token, userId) {
     return getPlaybackInfo(item.Id, token, userId)
         .then(info => {
-            console.log(info,"ffff")
             const quality = info && info.width && info.height ? `${info.width}x${info.height}` : "Auto";
 
             return {
@@ -182,7 +182,7 @@ function searchByName(token, name) {
 
     return fetch(url)
         .then(readJson)
-        .then(data => data.Items && data.Items[0]);
+        .then(data => {console.log(data); data.Items && data.Items[0]});
 }
 
 function getTmdbTitle(tmdbId, mediaType) {
