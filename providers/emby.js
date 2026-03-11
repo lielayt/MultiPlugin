@@ -149,7 +149,7 @@ function findEpisode(token, userId, seriesId, seasonNum, episodeNum) {
 function toStream(item, token, userId) {
     return getPlaybackInfo(item.Id, token, userId)
         .then(info => {
-            const quality = info && info.width && info.height ? `${info.height}p` : "Auto";
+            const quality = info && info.width && info.height ? `${info.DisplayTitle}` : "Auto";
 
             return {
                 name: PROVIDER_NAME,
@@ -214,7 +214,9 @@ function getPlaybackInfo(itemId, token, userId) {
             return {
                 width: source.MediaStreams[0].Width || 0,
                 height: source.MediaStreams[0].Height || 0,
-                bitrate: source.Bitrate || 0
+                bitrate: source.Bitrate || 0,
+                DisplayTitle: source.MediaStreams[0].DisplayTitle || ""
+
             };
         })
         .catch(() => null);
