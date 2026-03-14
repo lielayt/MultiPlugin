@@ -8,10 +8,10 @@ function toStream(episode) {
         quality: episode.quality || "Auto",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png",
-        // headers: {
-        //               "Referer" : "https://anipluspro.upn.one/",
-        //               "Origin" : "https://anipluspro.upn.one"
-        //          }
+        headers: {
+                      "Referer" : "https://anipluspro.upn.one/",
+                      "Origin" : "https://anipluspro.upn.one"
+                 }
     };
 }
 

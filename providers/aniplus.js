@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-14T15:42:01.972Z
+ * Generated: 2026-03-14T15:44:29.716Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -108,11 +108,11 @@ var require_extractor = __commonJS({
         url: "https://sskt.seawindphotography.space/v4/pq/6y6v3/cf-master.1738747989.txt",
         quality: episode.quality || "Auto",
         provider: "aniplus",
-        logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png"
-        // headers: {
-        //               "Referer" : "https://anipluspro.upn.one/",
-        //               "Origin" : "https://anipluspro.upn.one"
-        //          }
+        logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png",
+        headers: {
+          "Referer": "https://anipluspro.upn.one/",
+          "Origin": "https://anipluspro.upn.one"
+        }
       };
     }
     module2.exports = { toStream: toStream2 };
