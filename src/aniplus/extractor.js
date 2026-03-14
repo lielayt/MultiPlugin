@@ -5,7 +5,7 @@ function toStream(episode) {
         name: "Aniplus",
         title: episode.title || `Episode ${episode.number || 1}`,
         url: "https://sskt.seawindphotography.space/v4/pq/6y6v3/index-f1-v1-a1.txt" || episode.link || episode.episodeLink || "empty",
-        quality: episode.quality || "Test",
+        quality: episode.quality || "Testing",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png",
         headers: {
