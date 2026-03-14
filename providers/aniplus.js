@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-14T15:53:19.716Z
+ * Generated: 2026-03-14T15:55:19.359Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -106,7 +106,7 @@ var require_extractor = __commonJS({
         name: "Aniplus",
         title: episode.title || `Episode ${episode.number || 1}`,
         url: "https://sskt.seawindphotography.space/v4/pq/6y6v3/cf-master.1738747989.txt",
-        quality: episode.quality || "Auto",
+        quality: episode.quality || "Test",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png",
         headers: {
