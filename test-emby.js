@@ -1,6 +1,14 @@
-const { getStreams } = require('./providers/emby.js');
+const { getStreams } = require('./providers/aniplus.js');
 
-// Replace '872585' with a TMDB ID you verified exists in your Emby server
-getStreams('1416', 'tv', 1, 6).then(streams => {
-    console.log('Streams found:', streams);
-});
+async function run() {
+    console.log("Fetching streams...");
+    try {
+        const streams = await getStreams('550', 'movie'); // Fight Club
+        console.log(streams);
+    } catch (e) {
+        console.error(e);
+    }
+}
+run();
+
+
