@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-14T15:46:05.288Z
+ * Generated: 2026-03-14T15:49:13.875Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -110,6 +110,7 @@ var require_extractor = __commonJS({
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png",
         headers: {
+          "User-Agent": "Mozilla/5.0",
           "Referer": "https://anipluspro.upn.one/",
           "Origin": "https://anipluspro.upn.one"
         }
