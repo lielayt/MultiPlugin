@@ -9,7 +9,8 @@ function toStream(episode) {
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png",
         headers: {
-                      referer: "https://anipluspro.upn.one/"
+                      "Referer" : "https://anipluspro.upn.one/",
+                      "Origin" : "https://anipluspro.upn.one"
                  }
     };
 }
