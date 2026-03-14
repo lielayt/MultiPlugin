@@ -1,6 +1,6 @@
 /**
  * emby - Built from src/emby/
- * Generated: 2026-03-14T11:13:01.892Z
+ * Generated: 2026-03-14T14:47:19.442Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -121,7 +121,7 @@ function toStream(item, token, userId) {
       provider: "emby",
       logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/emby_edited.png",
       headers: {
-        "User-Agent": "Mozilla/5.0"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
       }
     };
   });
