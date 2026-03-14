@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-14T14:55:00.971Z
+ * Generated: 2026-03-14T15:08:44.451Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -103,8 +103,9 @@ var require_extractor = __commonJS({
   "src/aniplus/extractor.js"(exports2, module2) {
     function toStream2(episode) {
       return {
-        title: episode.title || `Episode ${episode.index}`,
-        url: episode.link || episode.episodeLink || "empty",
+        name: "Aniplus",
+        title: episode.title || `Episode ${episode.number || 1}`,
+        url: "https://s6p9.seawindphotography.space/v4/pq/6y6v3/index-f1-v1-a1.m3u8",
         quality: episode.quality || "Auto",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png",
