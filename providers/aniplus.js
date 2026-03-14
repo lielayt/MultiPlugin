@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-14T15:22:06.007Z
+ * Generated: 2026-03-14T15:42:01.972Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -105,14 +105,14 @@ var require_extractor = __commonJS({
       return {
         name: "Aniplus",
         title: episode.title || `Episode ${episode.number || 1}`,
-        url: "https://s6p9.seawindphotography.space/v4/pq/6y6v3/index-f1-v1-a1.m3u8",
+        url: "https://sskt.seawindphotography.space/v4/pq/6y6v3/cf-master.1738747989.txt",
         quality: episode.quality || "Auto",
         provider: "aniplus",
-        logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png",
-        headers: {
-          "Referer": "https://anipluspro.upn.one/",
-          "Origin": "https://anipluspro.upn.one"
-        }
+        logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png"
+        // headers: {
+        //               "Referer" : "https://anipluspro.upn.one/",
+        //               "Origin" : "https://anipluspro.upn.one"
+        //          }
       };
     }
     module2.exports = { toStream: toStream2 };
