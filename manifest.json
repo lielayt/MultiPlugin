@@ -26,6 +26,30 @@
       "limited": false,
       "disabledPlatforms": [],
       "supportsExternalPlayer": true
+    },
+    {
+      "id": "aniplus",
+      "name": "AniPlus",
+      "description": "AniPlus anime provider",
+      "version": "1.0.0",
+      "author": "lielayt",
+      "supportedTypes": [
+        "tv"
+      ],
+      "filename": "providers/aniplus.js",
+      "enabled": true,
+      "logo": "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png",
+      "contentLanguage": [
+        "jp",
+        "en"
+      ],
+      "formats": [
+        "m3u8",
+        "mp4"
+      ],
+      "limited": false,
+      "disabledPlatforms": [],
+      "supportsExternalPlayer": true
     }
   ]
 }
