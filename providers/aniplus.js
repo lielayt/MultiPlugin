@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-14T16:00:19.483Z
+ * Generated: 2026-03-14T16:01:42.643Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -105,12 +105,14 @@ var require_extractor = __commonJS({
       return {
         name: "Aniplus",
         title: episode.title || `Episode ${episode.number || 1}`,
-        url: "https://s6p9.seawindphotography.space/v4/pq/6y6v3/index-f1-v1-a1.m3u8",
-        quality: episode.quality || "Auto",
+        url: "https://sskt.seawindphotography.space/v4/pq/6y6v3/index-f1-v1-a1.txt",
+        quality: episode.quality || "Testing",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png",
         headers: {
-          "Referer": "https://anipluspro.upn.one/"
+          "User-Agent": "Mozilla/5.0",
+          "Referer": "https://anipluspro.upn.one/",
+          "Origin": "https://anipluspro.upn.one"
         }
       };
     }
