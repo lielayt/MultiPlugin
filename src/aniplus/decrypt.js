@@ -1,9 +1,8 @@
 // src/aniplus/decrypt.js
-import CryptoJS from 'crypto-js';
+const CryptoJS = require('crypto-js');
 
 const BASE_URL = "https://anipluspro.upn.one";
 
-// Helpers to derive key
 function deriveKey() {
     const m = (...g) => String.fromCharCode(...g);
     const p = (g, S) => g.codePointAt(S) || 0;
@@ -28,11 +27,9 @@ function deriveKey() {
     F += m(ae[0] * q + q + ae[3], ae[0] * q + q + ae[3]);
     F += m(ae[3] * P + ae[3] * q, parseInt(ae.reverse().join("").slice(0, 2)));
 
-    // Parses string into a WordArray for crypto-js
     return CryptoJS.enc.Utf8.parse(F);
 }
 
-// Helpers to derive IV
 function deriveIV(videoId) {
     const m = (...g) => String.fromCharCode(...g);
     const p = (g, S) => (g.codePointAt ? g.codePointAt(S) : 0) || 0;
@@ -64,30 +61,23 @@ function deriveIV(videoId) {
 
     B += m(q2, ae, pe, Je, k, ne, Ie);
 
-    // Parses string into a WordArray for crypto-js
     return CryptoJS.enc.Utf8.parse(B);
 }
 
-// Hermes-compatible AES-CBC decrypt using crypto-js
 function aesCbcDecrypt(hexData, key, iv) {
     const ciphertext = CryptoJS.enc.Hex.parse(hexData);
     const cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext });
 
-    const decrypted = CryptoJS.AES.decrypt(
-        cipherParams,
-        key,
-        {
-            iv: iv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        }
-    );
+    const decrypted = CryptoJS.AES.decrypt(cipherParams, key, {
+        iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    });
 
     return decrypted.toString(CryptoJS.enc.Utf8);
 }
 
-// Main decrypt function
-export async function decryptAniplus(videoId) {
+async function decryptAniplus(videoId) {
     const key = deriveKey();
     const iv = deriveIV(videoId);
 
@@ -102,19 +92,15 @@ export async function decryptAniplus(videoId) {
     });
 
     const encrypted = await res.text();
-    
-    // Decrypt the text
+
     let decryptedText = aesCbcDecrypt(encrypted, key, iv);
 
-    // FIX: Clean up trailing null bytes or padding to prevent JSON.parse errors
     const lastBraceIndex = decryptedText.lastIndexOf('}');
     if (lastBraceIndex !== -1) {
         decryptedText = decryptedText.substring(0, lastBraceIndex + 1);
     }
-    
-    // Parse the cleaned string
-    const data = JSON.parse(decryptedText);
 
+    const data = JSON.parse(decryptedText);
     const config = JSON.parse(data.streamingConfig);
     const ttV = config.adjust.Tiktok.params.v;
 
@@ -124,3 +110,5 @@ export async function decryptAniplus(videoId) {
         inhouse: data.source || null
     };
 }
+
+module.exports = { decryptAniplus };

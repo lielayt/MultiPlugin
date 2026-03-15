@@ -1,32 +1,11 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T14:45:54.793Z
+ * Generated: 2026-03-15T14:49:47.562Z
  */
-var __create = Object.create;
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
     var fulfilled = (value) => {
@@ -141,10 +120,100 @@ var require_extractor = __commonJS({
   }
 });
 
+// src/aniplus/decrypt.js
+var require_decrypt = __commonJS({
+  "src/aniplus/decrypt.js"(exports2, module2) {
+    var CryptoJS = require("crypto-js");
+    var BASE_URL = "https://anipluspro.upn.one";
+    function deriveKey() {
+      const m = (...g) => String.fromCharCode(...g);
+      const p = (g, S) => g.codePointAt(S) || 0;
+      const PROTOCOL = "https:";
+      const P = "10", O = 110, q = 1;
+      let F = "";
+      const B = p("\u1D5F").toString().split("");
+      for (let pe = 0; pe < B.length; pe++) {
+        F += m(P + B[pe]);
+      }
+      F += m(p(PROTOCOL, P / 10));
+      F += F.slice(1, 3);
+      F += m(O, O - 1, O + 7);
+      const ae = "3579".split("");
+      F += m(ae[3] + ae[2], ae[1] + ae[2]);
+      F += m(ae[0] * q + q + ae[3], ae[0] * q + q + ae[3]);
+      F += m(ae[3] * P + ae[3] * q, parseInt(ae.reverse().join("").slice(0, 2)));
+      return CryptoJS.enc.Utf8.parse(F);
+    }
+    function deriveIV(videoId) {
+      const m = (...g) => String.fromCharCode(...g);
+      const p = (g, S2) => (g.codePointAt ? g.codePointAt(S2) : 0) || 0;
+      const PROTOCOL = "https:";
+      const HASH = "#" + videoId;
+      const S = PROTOCOL;
+      const Pp = S + "//";
+      const O = HASH;
+      const q2 = S.length * Pp.length;
+      const F = 1;
+      let B = "";
+      for (let ke = F; ke < 10; ke++) {
+        B += m(ke + q2);
+      }
+      let ae = "";
+      ae = F + ae + F + ae + F;
+      const pe = ae.length * p(O, 0);
+      const Je = ae * F + S.length;
+      const k = Je + 4;
+      const ne = p(S, F);
+      const Ie = ne * F - 2;
+      B += m(q2, ae, pe, Je, k, ne, Ie);
+      return CryptoJS.enc.Utf8.parse(B);
+    }
+    function aesCbcDecrypt(hexData, key, iv) {
+      const ciphertext = CryptoJS.enc.Hex.parse(hexData);
+      const cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext });
+      const decrypted = CryptoJS.AES.decrypt(cipherParams, key, {
+        iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      });
+      return decrypted.toString(CryptoJS.enc.Utf8);
+    }
+    function decryptAniplus2(videoId) {
+      return __async(this, null, function* () {
+        const key = deriveKey();
+        const iv = deriveIV(videoId);
+        const url = `${BASE_URL}/api/v1/video?id=${videoId}&w=1920&h=1080&r=`;
+        const res = yield fetch(url, {
+          headers: {
+            "User-Agent": "Mozilla/5.0",
+            "Origin": BASE_URL,
+            "Referer": BASE_URL + "/"
+          }
+        });
+        const encrypted = yield res.text();
+        let decryptedText = aesCbcDecrypt(encrypted, key, iv);
+        const lastBraceIndex = decryptedText.lastIndexOf("}");
+        if (lastBraceIndex !== -1) {
+          decryptedText = decryptedText.substring(0, lastBraceIndex + 1);
+        }
+        const data = JSON.parse(decryptedText);
+        const config = JSON.parse(data.streamingConfig);
+        const ttV = config.adjust.Tiktok.params.v;
+        return {
+          tiktok: data.hlsVideoTiktok ? BASE_URL + data.hlsVideoTiktok + "?v=" + ttV : null,
+          cloudflare: data.cf || null,
+          inhouse: data.source || null
+        };
+      });
+    }
+    module2.exports = { decryptAniplus: decryptAniplus2 };
+  }
+});
+
 // src/aniplus/index.js
-var import_crypto_js = __toESM(require("crypto-js"));
 var { getTmdbTitle, getAnimeByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink } = require_http();
 var { toStream } = require_extractor();
+var { decryptAniplus } = require_decrypt();
 function getStreams(tmdbId, mediaType, season, episode) {
   return __async(this, null, function* () {
     const tmdbTitle = yield getTmdbTitle(tmdbId, mediaType);
@@ -169,85 +238,6 @@ function getStreams(tmdbId, mediaType, season, episode) {
     const result = yield decryptAniplus(identifier);
     alt.link = result.tiktok;
     return [toStream(alt)];
-  });
-}
-function decryptAniplus(videoId) {
-  return __async(this, null, function* () {
-    const BASE_URL = "https://anipluspro.upn.one";
-    const deriveKey = () => {
-      const m = (...g) => String.fromCharCode(...g);
-      const p = (g, S) => g.codePointAt(S) || 0;
-      const PROTOCOL = "https:";
-      const P = "10", O = 110, q = 1;
-      let F = "";
-      const B = p("\u1D5F").toString().split("");
-      for (let pe = 0; pe < B.length; pe++) {
-        F += m(P + B[pe]);
-      }
-      F += m(p(PROTOCOL, P / 10));
-      F += F.slice(1, 3);
-      F += m(O, O - 1, O + 7);
-      const ae = "3579".split("");
-      F += m(ae[3] + ae[2], ae[1] + ae[2]);
-      F += m(ae[0] * q + q + ae[3], ae[0] * q + q + ae[3]);
-      F += m(ae[3] * P + ae[3] * q, parseInt(ae.reverse().join("").slice(0, 2)));
-      return import_crypto_js.default.enc.Utf8.parse(F);
-    };
-    const deriveIV = () => {
-      const m = (...g) => String.fromCharCode(...g);
-      const p = (g, S2) => (g.codePointAt ? g.codePointAt(S2) : 0) || 0;
-      const PROTOCOL = "https:";
-      const HASH = "#" + videoId;
-      const S = PROTOCOL;
-      const Pp = S + "//";
-      const O = HASH;
-      const q2 = S.length * Pp.length;
-      const F = 1;
-      let B = "";
-      for (let ke = F; ke < 10; ke++) {
-        B += m(ke + q2);
-      }
-      let ae = "";
-      ae = F + ae + F + ae + F;
-      const pe = ae.length * p(O, 0);
-      const Je = ae * F + S.length;
-      const k = Je + 4;
-      const ne = p(S, F);
-      const Ie = ne * F - 2;
-      B += m(q2, ae, pe, Je, k, ne, Ie);
-      return import_crypto_js.default.enc.Utf8.parse(B);
-    };
-    const key = deriveKey();
-    const iv = deriveIV();
-    const url = `${BASE_URL}/api/v1/video?id=${videoId}&w=1920&h=1080&r=`;
-    const res = yield fetch(url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0",
-        "Origin": BASE_URL,
-        "Referer": BASE_URL + "/"
-      }
-    });
-    const encrypted = yield res.text();
-    const ciphertext = import_crypto_js.default.enc.Hex.parse(encrypted);
-    const cipherParams = import_crypto_js.default.lib.CipherParams.create({ ciphertext });
-    const decrypted = import_crypto_js.default.AES.decrypt(cipherParams, key, {
-      iv,
-      mode: import_crypto_js.default.mode.CBC,
-      padding: import_crypto_js.default.pad.Pkcs7
-    });
-    let decryptedText = decrypted.toString(import_crypto_js.default.enc.Utf8);
-    const lastBraceIndex = decryptedText.lastIndexOf("}");
-    if (lastBraceIndex !== -1) {
-      decryptedText = decryptedText.substring(0, lastBraceIndex + 1);
-    }
-    const data = JSON.parse(decryptedText);
-    const config = JSON.parse(data.streamingConfig);
-    const ttV = config.adjust.Tiktok.params.v;
-    return {
-      tiktok: data.hlsVideoTiktok ? BASE_URL + data.hlsVideoTiktok + "?v=" + ttV : null,
-      cloudflare: data.cf || null,
-      inhouse: data.source || null
-    };
   });
 }
 if (typeof module !== "undefined" && module.exports)
