@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T17:31:59.764Z
+ * Generated: 2026-03-15T17:36:58.439Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -132,7 +132,7 @@ var require_core = __commonJS({
         root.CryptoJS = factory();
       }
     })(exports2, function() {
-      var CryptoJS = CryptoJS || function(Math2, undefined2) {
+      var CryptoJS2 = CryptoJS2 || function(Math2, undefined2) {
         var crypto;
         if (typeof window !== "undefined" && window.crypto) {
           crypto = window.crypto;
@@ -723,7 +723,7 @@ var require_core = __commonJS({
         var C_algo = C.algo = {};
         return C;
       }(Math);
-      return CryptoJS;
+      return CryptoJS2;
     });
   }
 });
@@ -739,9 +739,9 @@ var require_x64_core = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function(undefined2) {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var Base = C_lib.Base;
         var X32WordArray = C_lib.WordArray;
@@ -980,7 +980,7 @@ var require_x64_core = __commonJS({
           }
         });
       })();
-      return CryptoJS;
+      return CryptoJS2;
     });
   }
 });
@@ -996,12 +996,12 @@ var require_lib_typedarrays = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
         if (typeof ArrayBuffer != "function") {
           return;
         }
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var WordArray = C_lib.WordArray;
         var superInit = WordArray.init;
@@ -1025,7 +1025,7 @@ var require_lib_typedarrays = __commonJS({
         };
         subInit.prototype = WordArray;
       })();
-      return CryptoJS.lib.WordArray;
+      return CryptoJS2.lib.WordArray;
     });
   }
 });
@@ -1041,9 +1041,9 @@ var require_enc_utf16 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var WordArray = C_lib.WordArray;
         var C_enc = C.enc;
@@ -1143,7 +1143,7 @@ var require_enc_utf16 = __commonJS({
           return word << 8 & 4278255360 | word >>> 8 & 16711935;
         }
       })();
-      return CryptoJS.enc.Utf16;
+      return CryptoJS2.enc.Utf16;
     });
   }
 });
@@ -1159,9 +1159,9 @@ var require_enc_base64 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var WordArray = C_lib.WordArray;
         var C_enc = C.enc;
@@ -1251,7 +1251,7 @@ var require_enc_base64 = __commonJS({
           return WordArray.create(words, nBytes);
         }
       })();
-      return CryptoJS.enc.Base64;
+      return CryptoJS2.enc.Base64;
     });
   }
 });
@@ -1267,9 +1267,9 @@ var require_enc_base64url = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var WordArray = C_lib.WordArray;
         var C_enc = C.enc;
@@ -1370,7 +1370,7 @@ var require_enc_base64url = __commonJS({
           return WordArray.create(words, nBytes);
         }
       })();
-      return CryptoJS.enc.Base64url;
+      return CryptoJS2.enc.Base64url;
     });
   }
 });
@@ -1386,9 +1386,9 @@ var require_md5 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function(Math2) {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var WordArray = C_lib.WordArray;
         var Hasher = C_lib.Hasher;
@@ -1549,7 +1549,7 @@ var require_md5 = __commonJS({
         C.MD5 = Hasher._createHelper(MD5);
         C.HmacMD5 = Hasher._createHmacHelper(MD5);
       })(Math);
-      return CryptoJS.MD5;
+      return CryptoJS2.MD5;
     });
   }
 });
@@ -1565,9 +1565,9 @@ var require_sha1 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var WordArray = C_lib.WordArray;
         var Hasher = C_lib.Hasher;
@@ -1640,7 +1640,7 @@ var require_sha1 = __commonJS({
         C.SHA1 = Hasher._createHelper(SHA1);
         C.HmacSHA1 = Hasher._createHmacHelper(SHA1);
       })();
-      return CryptoJS.SHA1;
+      return CryptoJS2.SHA1;
     });
   }
 });
@@ -1656,9 +1656,9 @@ var require_sha256 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function(Math2) {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var WordArray = C_lib.WordArray;
         var Hasher = C_lib.Hasher;
@@ -1761,7 +1761,7 @@ var require_sha256 = __commonJS({
         C.SHA256 = Hasher._createHelper(SHA256);
         C.HmacSHA256 = Hasher._createHmacHelper(SHA256);
       })(Math);
-      return CryptoJS.SHA256;
+      return CryptoJS2.SHA256;
     });
   }
 });
@@ -1777,9 +1777,9 @@ var require_sha224 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var WordArray = C_lib.WordArray;
         var C_algo = C.algo;
@@ -1806,7 +1806,7 @@ var require_sha224 = __commonJS({
         C.SHA224 = SHA256._createHelper(SHA224);
         C.HmacSHA224 = SHA256._createHmacHelper(SHA224);
       })();
-      return CryptoJS.SHA224;
+      return CryptoJS2.SHA224;
     });
   }
 });
@@ -1822,9 +1822,9 @@ var require_sha512 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var Hasher = C_lib.Hasher;
         var C_x64 = C.x64;
@@ -2088,7 +2088,7 @@ var require_sha512 = __commonJS({
         C.SHA512 = Hasher._createHelper(SHA512);
         C.HmacSHA512 = Hasher._createHmacHelper(SHA512);
       })();
-      return CryptoJS.SHA512;
+      return CryptoJS2.SHA512;
     });
   }
 });
@@ -2104,9 +2104,9 @@ var require_sha384 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_x64 = C.x64;
         var X64Word = C_x64.Word;
         var X64WordArray = C_x64.WordArray;
@@ -2134,7 +2134,7 @@ var require_sha384 = __commonJS({
         C.SHA384 = SHA512._createHelper(SHA384);
         C.HmacSHA384 = SHA512._createHmacHelper(SHA384);
       })();
-      return CryptoJS.SHA384;
+      return CryptoJS2.SHA384;
     });
   }
 });
@@ -2150,9 +2150,9 @@ var require_sha3 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function(Math2) {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var WordArray = C_lib.WordArray;
         var Hasher = C_lib.Hasher;
@@ -2336,7 +2336,7 @@ var require_sha3 = __commonJS({
         C.SHA3 = Hasher._createHelper(SHA3);
         C.HmacSHA3 = Hasher._createHmacHelper(SHA3);
       })(Math);
-      return CryptoJS.SHA3;
+      return CryptoJS2.SHA3;
     });
   }
 });
@@ -2352,9 +2352,9 @@ var require_ripemd160 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function(Math2) {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var WordArray = C_lib.WordArray;
         var Hasher = C_lib.Hasher;
@@ -2807,7 +2807,7 @@ var require_ripemd160 = __commonJS({
         C.RIPEMD160 = Hasher._createHelper(RIPEMD160);
         C.HmacRIPEMD160 = Hasher._createHmacHelper(RIPEMD160);
       })(Math);
-      return CryptoJS.RIPEMD160;
+      return CryptoJS2.RIPEMD160;
     });
   }
 });
@@ -2823,9 +2823,9 @@ var require_hmac = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var Base = C_lib.Base;
         var C_enc = C.enc;
@@ -2930,9 +2930,9 @@ var require_pbkdf2 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var Base = C_lib.Base;
         var WordArray = C_lib.WordArray;
@@ -3012,7 +3012,7 @@ var require_pbkdf2 = __commonJS({
           return PBKDF2.create(cfg).compute(password, salt);
         };
       })();
-      return CryptoJS.PBKDF2;
+      return CryptoJS2.PBKDF2;
     });
   }
 });
@@ -3028,9 +3028,9 @@ var require_evpkdf = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var Base = C_lib.Base;
         var WordArray = C_lib.WordArray;
@@ -3103,7 +3103,7 @@ var require_evpkdf = __commonJS({
           return EvpKDF.create(cfg).compute(password, salt);
         };
       })();
-      return CryptoJS.EvpKDF;
+      return CryptoJS2.EvpKDF;
     });
   }
 });
@@ -3119,9 +3119,9 @@ var require_cipher_core = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
-      CryptoJS.lib.Cipher || function(undefined2) {
-        var C = CryptoJS;
+    })(exports2, function(CryptoJS2) {
+      CryptoJS2.lib.Cipher || function(undefined2) {
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var Base = C_lib.Base;
         var WordArray = C_lib.WordArray;
@@ -3763,9 +3763,9 @@ var require_mode_cfb = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
-      CryptoJS.mode.CFB = function() {
-        var CFB = CryptoJS.lib.BlockCipherMode.extend();
+    })(exports2, function(CryptoJS2) {
+      CryptoJS2.mode.CFB = function() {
+        var CFB = CryptoJS2.lib.BlockCipherMode.extend();
         CFB.Encryptor = CFB.extend({
           processBlock: function(words, offset) {
             var cipher = this._cipher;
@@ -3799,7 +3799,7 @@ var require_mode_cfb = __commonJS({
         }
         return CFB;
       }();
-      return CryptoJS.mode.CFB;
+      return CryptoJS2.mode.CFB;
     });
   }
 });
@@ -3815,9 +3815,9 @@ var require_mode_ctr = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
-      CryptoJS.mode.CTR = function() {
-        var CTR = CryptoJS.lib.BlockCipherMode.extend();
+    })(exports2, function(CryptoJS2) {
+      CryptoJS2.mode.CTR = function() {
+        var CTR = CryptoJS2.lib.BlockCipherMode.extend();
         var Encryptor = CTR.Encryptor = CTR.extend({
           processBlock: function(words, offset) {
             var cipher = this._cipher;
@@ -3839,7 +3839,7 @@ var require_mode_ctr = __commonJS({
         CTR.Decryptor = Encryptor;
         return CTR;
       }();
-      return CryptoJS.mode.CTR;
+      return CryptoJS2.mode.CTR;
     });
   }
 });
@@ -3855,9 +3855,9 @@ var require_mode_ctr_gladman = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
-      CryptoJS.mode.CTRGladman = function() {
-        var CTRGladman = CryptoJS.lib.BlockCipherMode.extend();
+    })(exports2, function(CryptoJS2) {
+      CryptoJS2.mode.CTRGladman = function() {
+        var CTRGladman = CryptoJS2.lib.BlockCipherMode.extend();
         function incWord(word) {
           if ((word >> 24 & 255) === 255) {
             var b1 = word >> 16 & 255;
@@ -3914,7 +3914,7 @@ var require_mode_ctr_gladman = __commonJS({
         CTRGladman.Decryptor = Encryptor;
         return CTRGladman;
       }();
-      return CryptoJS.mode.CTRGladman;
+      return CryptoJS2.mode.CTRGladman;
     });
   }
 });
@@ -3930,9 +3930,9 @@ var require_mode_ofb = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
-      CryptoJS.mode.OFB = function() {
-        var OFB = CryptoJS.lib.BlockCipherMode.extend();
+    })(exports2, function(CryptoJS2) {
+      CryptoJS2.mode.OFB = function() {
+        var OFB = CryptoJS2.lib.BlockCipherMode.extend();
         var Encryptor = OFB.Encryptor = OFB.extend({
           processBlock: function(words, offset) {
             var cipher = this._cipher;
@@ -3952,7 +3952,7 @@ var require_mode_ofb = __commonJS({
         OFB.Decryptor = Encryptor;
         return OFB;
       }();
-      return CryptoJS.mode.OFB;
+      return CryptoJS2.mode.OFB;
     });
   }
 });
@@ -3968,9 +3968,9 @@ var require_mode_ecb = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
-      CryptoJS.mode.ECB = function() {
-        var ECB = CryptoJS.lib.BlockCipherMode.extend();
+    })(exports2, function(CryptoJS2) {
+      CryptoJS2.mode.ECB = function() {
+        var ECB = CryptoJS2.lib.BlockCipherMode.extend();
         ECB.Encryptor = ECB.extend({
           processBlock: function(words, offset) {
             this._cipher.encryptBlock(words, offset);
@@ -3983,7 +3983,7 @@ var require_mode_ecb = __commonJS({
         });
         return ECB;
       }();
-      return CryptoJS.mode.ECB;
+      return CryptoJS2.mode.ECB;
     });
   }
 });
@@ -3999,8 +3999,8 @@ var require_pad_ansix923 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
-      CryptoJS.pad.AnsiX923 = {
+    })(exports2, function(CryptoJS2) {
+      CryptoJS2.pad.AnsiX923 = {
         pad: function(data, blockSize) {
           var dataSigBytes = data.sigBytes;
           var blockSizeBytes = blockSize * 4;
@@ -4015,7 +4015,7 @@ var require_pad_ansix923 = __commonJS({
           data.sigBytes -= nPaddingBytes;
         }
       };
-      return CryptoJS.pad.Ansix923;
+      return CryptoJS2.pad.Ansix923;
     });
   }
 });
@@ -4031,19 +4031,19 @@ var require_pad_iso10126 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
-      CryptoJS.pad.Iso10126 = {
+    })(exports2, function(CryptoJS2) {
+      CryptoJS2.pad.Iso10126 = {
         pad: function(data, blockSize) {
           var blockSizeBytes = blockSize * 4;
           var nPaddingBytes = blockSizeBytes - data.sigBytes % blockSizeBytes;
-          data.concat(CryptoJS.lib.WordArray.random(nPaddingBytes - 1)).concat(CryptoJS.lib.WordArray.create([nPaddingBytes << 24], 1));
+          data.concat(CryptoJS2.lib.WordArray.random(nPaddingBytes - 1)).concat(CryptoJS2.lib.WordArray.create([nPaddingBytes << 24], 1));
         },
         unpad: function(data) {
           var nPaddingBytes = data.words[data.sigBytes - 1 >>> 2] & 255;
           data.sigBytes -= nPaddingBytes;
         }
       };
-      return CryptoJS.pad.Iso10126;
+      return CryptoJS2.pad.Iso10126;
     });
   }
 });
@@ -4059,18 +4059,18 @@ var require_pad_iso97971 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
-      CryptoJS.pad.Iso97971 = {
+    })(exports2, function(CryptoJS2) {
+      CryptoJS2.pad.Iso97971 = {
         pad: function(data, blockSize) {
-          data.concat(CryptoJS.lib.WordArray.create([2147483648], 1));
-          CryptoJS.pad.ZeroPadding.pad(data, blockSize);
+          data.concat(CryptoJS2.lib.WordArray.create([2147483648], 1));
+          CryptoJS2.pad.ZeroPadding.pad(data, blockSize);
         },
         unpad: function(data) {
-          CryptoJS.pad.ZeroPadding.unpad(data);
+          CryptoJS2.pad.ZeroPadding.unpad(data);
           data.sigBytes--;
         }
       };
-      return CryptoJS.pad.Iso97971;
+      return CryptoJS2.pad.Iso97971;
     });
   }
 });
@@ -4086,8 +4086,8 @@ var require_pad_zeropadding = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
-      CryptoJS.pad.ZeroPadding = {
+    })(exports2, function(CryptoJS2) {
+      CryptoJS2.pad.ZeroPadding = {
         pad: function(data, blockSize) {
           var blockSizeBytes = blockSize * 4;
           data.clamp();
@@ -4104,7 +4104,7 @@ var require_pad_zeropadding = __commonJS({
           }
         }
       };
-      return CryptoJS.pad.ZeroPadding;
+      return CryptoJS2.pad.ZeroPadding;
     });
   }
 });
@@ -4120,14 +4120,14 @@ var require_pad_nopadding = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
-      CryptoJS.pad.NoPadding = {
+    })(exports2, function(CryptoJS2) {
+      CryptoJS2.pad.NoPadding = {
         pad: function() {
         },
         unpad: function() {
         }
       };
-      return CryptoJS.pad.NoPadding;
+      return CryptoJS2.pad.NoPadding;
     });
   }
 });
@@ -4143,9 +4143,9 @@ var require_format_hex = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function(undefined2) {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var CipherParams = C_lib.CipherParams;
         var C_enc = C.enc;
@@ -4187,7 +4187,7 @@ var require_format_hex = __commonJS({
           }
         };
       })();
-      return CryptoJS.format.Hex;
+      return CryptoJS2.format.Hex;
     });
   }
 });
@@ -4203,9 +4203,9 @@ var require_aes = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var BlockCipher = C_lib.BlockCipher;
         var C_algo = C.algo;
@@ -4341,7 +4341,7 @@ var require_aes = __commonJS({
         });
         C.AES = BlockCipher._createHelper(AES);
       })();
-      return CryptoJS.AES;
+      return CryptoJS2.AES;
     });
   }
 });
@@ -4357,9 +4357,9 @@ var require_tripledes = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var WordArray = C_lib.WordArray;
         var BlockCipher = C_lib.BlockCipher;
@@ -5122,7 +5122,7 @@ var require_tripledes = __commonJS({
         });
         C.TripleDES = BlockCipher._createHelper(TripleDES);
       })();
-      return CryptoJS.TripleDES;
+      return CryptoJS2.TripleDES;
     });
   }
 });
@@ -5138,9 +5138,9 @@ var require_rc4 = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var StreamCipher = C_lib.StreamCipher;
         var C_algo = C.algo;
@@ -5205,7 +5205,7 @@ var require_rc4 = __commonJS({
         });
         C.RC4Drop = StreamCipher._createHelper(RC4Drop);
       })();
-      return CryptoJS.RC4;
+      return CryptoJS2.RC4;
     });
   }
 });
@@ -5221,9 +5221,9 @@ var require_rabbit = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var StreamCipher = C_lib.StreamCipher;
         var C_algo = C.algo;
@@ -5334,7 +5334,7 @@ var require_rabbit = __commonJS({
         }
         C.Rabbit = StreamCipher._createHelper(Rabbit);
       })();
-      return CryptoJS.Rabbit;
+      return CryptoJS2.Rabbit;
     });
   }
 });
@@ -5350,9 +5350,9 @@ var require_rabbit_legacy = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var StreamCipher = C_lib.StreamCipher;
         var C_algo = C.algo;
@@ -5460,7 +5460,7 @@ var require_rabbit_legacy = __commonJS({
         }
         C.RabbitLegacy = StreamCipher._createHelper(RabbitLegacy);
       })();
-      return CryptoJS.RabbitLegacy;
+      return CryptoJS2.RabbitLegacy;
     });
   }
 });
@@ -5476,9 +5476,9 @@ var require_blowfish = __commonJS({
       } else {
         factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
+    })(exports2, function(CryptoJS2) {
       (function() {
-        var C = CryptoJS;
+        var C = CryptoJS2;
         var C_lib = C.lib;
         var BlockCipher = C_lib.BlockCipher;
         var C_algo = C.algo;
@@ -6649,7 +6649,7 @@ var require_blowfish = __commonJS({
         });
         C.Blowfish = BlockCipher._createHelper(Blowfish);
       })();
-      return CryptoJS.Blowfish;
+      return CryptoJS2.Blowfish;
     });
   }
 });
@@ -6665,35 +6665,95 @@ var require_crypto_js = __commonJS({
       } else {
         root.CryptoJS = factory(root.CryptoJS);
       }
-    })(exports2, function(CryptoJS) {
-      return CryptoJS;
+    })(exports2, function(CryptoJS2) {
+      return CryptoJS2;
     });
-  }
-});
-
-// src/aniplus/decrypt.js
-var require_decrypt = __commonJS({
-  "src/aniplus/decrypt.js"(exports2, module2) {
-    var CryptoJS = require_crypto_js();
-    function decryptAniplus2(videoId) {
-      return __async(this, null, function* () {
-        return {
-          tiktok: "https://anipluspro.upn.one/hls/8_gvjImIC2qMnFBWONtwow/6hf/6spnib6f/iuthbu/tt/master.m3u8?v=1766826492"
-        };
-      });
-    }
-    module2.exports = { decryptAniplus: decryptAniplus2 };
   }
 });
 
 // src/aniplus/index.js
 var { getTmdbTitle, getAnimeByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink } = require_http();
 var { toStream } = require_extractor();
-var { decryptAniplus } = require_decrypt();
+var CryptoJS = require_crypto_js();
+var BASE_URL = "https://anipluspro.upn.one";
+function deriveKey() {
+  const m = (...g) => String.fromCharCode(...g);
+  const p = (g, S) => g.codePointAt(S) || 0;
+  const PROTOCOL = "https:";
+  const P = "10", O = 110, q = 1;
+  let F = "";
+  const B = p("\u1D5F").toString().split("");
+  for (let pe = 0; pe < B.length; pe++)
+    F += m(P + B[pe]);
+  F += m(p(PROTOCOL, P / 10));
+  F += F.slice(1, 3);
+  F += m(O, O - 1, O + 7);
+  const ae = "3579".split("");
+  F += m(ae[3] + ae[2], ae[1] + ae[2]);
+  F += m(ae[0] * q + q + ae[3], ae[0] * q + q + ae[3]);
+  F += m(ae[3] * P + ae[3] * q, parseInt(ae.reverse().join("").slice(0, 2)));
+  return CryptoJS.enc.Utf8.parse(F);
+}
+function deriveIV(videoId) {
+  const m = (...g) => String.fromCharCode(...g);
+  const p = (g, S2) => (g.codePointAt ? g.codePointAt(S2) : 0) || 0;
+  const PROTOCOL = "https:";
+  const HASH = "#" + videoId;
+  const S = PROTOCOL;
+  const Pp = S + "//";
+  const O = HASH;
+  const q2 = S.length * Pp.length;
+  const F = 1;
+  let B = "";
+  for (let ke = F; ke < 10; ke++)
+    B += m(ke + q2);
+  let ae = "";
+  ae = F + ae + F + ae + F;
+  const pe = ae.length * p(O, 0);
+  const Je = ae * F + S.length;
+  const k = Je + 4;
+  const ne = p(S, F);
+  const Ie = ne * F - 2;
+  B += m(q2, ae, pe, Je, k, ne, Ie);
+  return CryptoJS.enc.Utf8.parse(B);
+}
+function decryptAniplus(videoId) {
+  return __async(this, null, function* () {
+    const key = deriveKey();
+    const iv = deriveIV(videoId);
+    const url = `${BASE_URL}/api/v1/video?id=${videoId}&w=1920&h=1080&r=`;
+    const res = yield fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+        "Origin": BASE_URL,
+        "Referer": BASE_URL + "/"
+      }
+    });
+    const encrypted = yield res.text();
+    const ciphertext = CryptoJS.enc.Hex.parse(encrypted);
+    const cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext });
+    const decrypted = CryptoJS.AES.decrypt(cipherParams, key, {
+      iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    let decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+    const lastBraceIndex = decryptedText.lastIndexOf("}");
+    if (lastBraceIndex !== -1)
+      decryptedText = decryptedText.substring(0, lastBraceIndex + 1);
+    const data = JSON.parse(decryptedText);
+    const config = JSON.parse(data.streamingConfig);
+    const ttV = config.adjust.Tiktok.params.v;
+    return {
+      tiktok: data.hlsVideoTiktok ? BASE_URL + data.hlsVideoTiktok + "?v=" + ttV : null,
+      cloudflare: data.cf || null,
+      inhouse: data.source || null
+    };
+  });
+}
 function getStreams(tmdbId, mediaType, season, episode) {
   return __async(this, null, function* () {
     const tmdbTitle = yield getTmdbTitle(tmdbId, mediaType);
-    console.log("TMDB title:", tmdbTitle);
     if (!tmdbTitle)
       return [];
     const anime = yield getAnimeByName(tmdbTitle);
@@ -6711,8 +6771,13 @@ function getStreams(tmdbId, mediaType, season, episode) {
       return [toStream(ep)];
     const alt = yield getAlternativeEpisodeLink(ep.episode_id);
     const identifier = alt.episodeLink.split("#")[1];
-    const result = yield decryptAniplus(identifier);
-    alt.link = result.tiktok;
+    try {
+      const result = yield decryptAniplus(identifier);
+      alt.link = result.tiktok;
+    } catch (e) {
+      alt.title = "ERR:" + e.message.slice(0, 40);
+      alt.link = null;
+    }
     return [toStream(alt)];
   });
 }
