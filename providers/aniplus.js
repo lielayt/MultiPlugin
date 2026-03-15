@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T18:09:49.679Z
+ * Generated: 2026-03-15T18:12:32.260Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -6724,20 +6724,24 @@ function decryptAniplus(videoId) {
     const url = `${BASE_URL}/api/v1/video?id=${videoId}&w=1920&h=1080&r=`;
     const res = yield fetch(url, {
       headers: {
-        "User-Agent": "Mozilla/5.0",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "application/json, text/plain, */*",
+        "X-Requested-With": "XMLHttpRequest",
         "Origin": BASE_URL,
         "Referer": BASE_URL + "/"
       }
     });
+    const contentType = res.headers.get("content-type") || "";
+    if (contentType.includes("video") || contentType.includes("application/octet")) {
+      return {
+        tiktok: res.url || url,
+        cloudflare: null,
+        inhouse: null
+      };
+    }
     const encrypted = yield res.text();
-    const ciphertext = CryptoJS.enc.Hex.parse(encrypted);
-    const cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext });
-    const decrypted = CryptoJS.AES.decrypt(cipherParams, key, {
-      iv,
-      mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7
-    });
-    let decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+    const decBytes = aesCbcDecrypt(encrypted, key, iv);
+    let decryptedText = bytesToStr(decBytes);
     const lastBraceIndex = decryptedText.lastIndexOf("}");
     if (lastBraceIndex !== -1)
       decryptedText = decryptedText.substring(0, lastBraceIndex + 1);
