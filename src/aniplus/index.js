@@ -52,27 +52,20 @@ async function decryptAniplus(videoId) {
     const url = `${BASE_URL}/api/v1/video?id=${videoId}&w=1920&h=1080&r=`;
     const res = await fetch(url, {
         headers: {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept": "application/json, text/plain, */*",
-            "X-Requested-With": "XMLHttpRequest",
+            "User-Agent": "Mozilla/5.0",
             "Origin": BASE_URL,
             "Referer": BASE_URL + "/"
         }
     });
-
-    const contentType = res.headers.get("content-type") || "";
-    if (contentType.includes("video") || contentType.includes("application/octet")) {
-        // Server returned the stream directly — use the URL as-is
-        return {
-            tiktok: res.url || url,
-            cloudflare: null,
-            inhouse: null
-        };
-    }
-
     const encrypted = await res.text();
-    const decBytes = aesCbcDecrypt(encrypted, key, iv);
-    let decryptedText = bytesToStr(decBytes);
+    const ciphertext = CryptoJS.enc.Hex.parse(encrypted);
+    const cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext });
+    const decrypted = CryptoJS.AES.decrypt(cipherParams, key, {
+        iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    let decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
     const lastBraceIndex = decryptedText.lastIndexOf('}');
     if (lastBraceIndex !== -1) decryptedText = decryptedText.substring(0, lastBraceIndex + 1);
     const data = JSON.parse(decryptedText);
@@ -112,7 +105,6 @@ async function getStreams(tmdbId, mediaType, season, episode) {
         alt.title = "Decrypt ERR:" + e.message.slice(0, 40);
         alt.link = null;
     }
-    console.log("Alt: ",alt)
     return [toStream(alt)];
 }
 

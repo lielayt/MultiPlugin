@@ -25,6 +25,7 @@ const EXTERNAL_MODULES = [
     'cheerio-without-node-native',
     'react-native-cheerio',
     'cheerio',
+    'crypto-js',
     'axios',
     'crypto'
 ];
