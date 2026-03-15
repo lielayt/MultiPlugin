@@ -1,8 +1,9 @@
 // src/aniplus/decrypt.js
+import CryptoJS from 'crypto-js';
 
 const BASE_URL = "https://anipluspro.upn.one";
 
-// Helpers to derive key/iv (same logic as before)
+// Helpers to derive key
 function deriveKey() {
     const m = (...g) => String.fromCharCode(...g);
     const p = (g, S) => g.codePointAt(S) || 0;
@@ -13,8 +14,9 @@ function deriveKey() {
     let F = "";
     const B = p("ᵟ").toString().split("");
 
-    for (let pe = 0; pe < B.length; pe++)
+    for (let pe = 0; pe < B.length; pe++) {
         F += m(P + B[pe]);
+    }
 
     F += m(p(PROTOCOL, P / 10));
     F += F.slice(1, 3);
@@ -26,9 +28,11 @@ function deriveKey() {
     F += m(ae[0] * q + q + ae[3], ae[0] * q + q + ae[3]);
     F += m(ae[3] * P + ae[3] * q, parseInt(ae.reverse().join("").slice(0, 2)));
 
-    return new TextEncoder().encode(F);
+    // Parses string into a WordArray for crypto-js
+    return CryptoJS.enc.Utf8.parse(F);
 }
 
+// Helpers to derive IV
 function deriveIV(videoId) {
     const m = (...g) => String.fromCharCode(...g);
     const p = (g, S) => (g.codePointAt ? g.codePointAt(S) : 0) || 0;
@@ -45,8 +49,9 @@ function deriveIV(videoId) {
 
     let B = "";
 
-    for (let ke = F; ke < 10; ke++)
+    for (let ke = F; ke < 10; ke++) {
         B += m(ke + q2);
+    }
 
     let ae = "";
     ae = F + ae + F + ae + F;
@@ -59,33 +64,30 @@ function deriveIV(videoId) {
 
     B += m(q2, ae, pe, Je, k, ne, Ie);
 
-    return new TextEncoder().encode(B);
+    // Parses string into a WordArray for crypto-js
+    return CryptoJS.enc.Utf8.parse(B);
 }
 
-// Hermes-compatible AES-CBC decrypt
-async function aesCbcDecrypt(hexData, key, iv) {
-    const cryptoKey = await crypto.subtle.importKey(
-        "raw",
+// Hermes-compatible AES-CBC decrypt using crypto-js
+function aesCbcDecrypt(hexData, key, iv) {
+    const ciphertext = CryptoJS.enc.Hex.parse(hexData);
+    const cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext });
+
+    const decrypted = CryptoJS.AES.decrypt(
+        cipherParams,
         key,
-        { name: "AES-CBC" },
-        false,
-        ["decrypt"]
+        {
+            iv: iv,
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+        }
     );
 
-    // Convert hex string to Uint8Array
-    const data = new Uint8Array(hexData.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-
-    const decrypted = await crypto.subtle.decrypt(
-        { name: "AES-CBC", iv },
-        cryptoKey,
-        data
-    );
-
-    return new TextDecoder().decode(decrypted);
+    return decrypted.toString(CryptoJS.enc.Utf8);
 }
 
 // Main decrypt function
-async function decryptAniplus(videoId) {
+export async function decryptAniplus(videoId) {
     const key = deriveKey();
     const iv = deriveIV(videoId);
 
@@ -100,7 +102,18 @@ async function decryptAniplus(videoId) {
     });
 
     const encrypted = await res.text();
-    const data = JSON.parse(await aesCbcDecrypt(encrypted, key, iv));
+    
+    // Decrypt the text
+    let decryptedText = aesCbcDecrypt(encrypted, key, iv);
+
+    // FIX: Clean up trailing null bytes or padding to prevent JSON.parse errors
+    const lastBraceIndex = decryptedText.lastIndexOf('}');
+    if (lastBraceIndex !== -1) {
+        decryptedText = decryptedText.substring(0, lastBraceIndex + 1);
+    }
+    
+    // Parse the cleaned string
+    const data = JSON.parse(decryptedText);
 
     const config = JSON.parse(data.streamingConfig);
     const ttV = config.adjust.Tiktok.params.v;
@@ -111,7 +124,3 @@ async function decryptAniplus(videoId) {
         inhouse: data.source || null
     };
 }
-
-module.exports = {
-    decryptAniplus
-};
