@@ -102,8 +102,8 @@ async function getStreams(tmdbId, mediaType, season, episode) {
         const result = await decryptAniplus(identifier);
         alt.link = result.tiktok;
     } catch(e) {
-        alt.title = "Decrypt ERR:" + e.message.slice(0, 40);
-        // alt.link = null;
+        alt.title = "Decrypt ERR:" + e.message;
+        alt.link = null;
     }
     return [toStream(alt)];
 }
