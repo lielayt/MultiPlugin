@@ -28,7 +28,6 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     const identifier = alt.episodeLink.split("#")[1]
     const result = await decryptAniplus(identifier)
     alt.link = result.tiktok
-    console.log(alt)
     return [toStream(alt)]
 }
 

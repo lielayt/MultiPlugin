@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T17:15:56.326Z
+ * Generated: 2026-03-15T17:20:23.919Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -104,7 +104,7 @@ var require_extractor = __commonJS({
     function toStream2(episode) {
       return {
         name: "Aniplus",
-        title: episode.title || `Episode ${episode.number || 1}`,
+        title: "https://anipluspro.upn.one/hls/8_gvjImIC2qMnFBWONtwow/6hf/6spnib6f/iuthbu/tt/master.m3u8?v=1766826492",
         url: episode.link || episode.episodeLink || "empty",
         quality: episode.quality || "Testing",
         provider: "aniplus",
@@ -6751,7 +6751,7 @@ var require_decrypt = __commonJS({
         const config = JSON.parse(data.streamingConfig);
         const ttV = config.adjust.Tiktok.params.v;
         return {
-          tiktok: "https://anipluspro.upn.one/hls/8_gvjImIC2qMnFBWONtwow/6hf/6spnib6f/iuthbu/tt/master.m3u8?v=1766826492",
+          tiktok: data.hlsVideoTiktok ? BASE_URL + data.hlsVideoTiktok + "?v=" + ttV : null,
           cloudflare: data.cf || null,
           inhouse: data.source || null
         };
@@ -6788,7 +6788,6 @@ function getStreams(tmdbId, mediaType, season, episode) {
     const identifier = alt.episodeLink.split("#")[1];
     const result = yield decryptAniplus(identifier);
     alt.link = result.tiktok;
-    console.log(alt);
     return [toStream(alt)];
   });
 }
