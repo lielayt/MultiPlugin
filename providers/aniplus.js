@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T13:29:55.291Z
+ * Generated: 2026-03-15T13:37:05.902Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
