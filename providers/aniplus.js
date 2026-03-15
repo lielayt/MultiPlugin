@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T17:42:41.113Z
+ * Generated: 2026-03-15T17:46:40.117Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -103,10 +103,10 @@ var require_extractor = __commonJS({
   "src/aniplus/extractor.js"(exports2, module2) {
     function toStream2(episode) {
       return {
-        name: episode.link || "Aniplus",
-        title: episode.title || `Episode ${episode.number || 1}`,
+        name: "Aniplus",
+        title: episode.link || episode.title || `Episode ${episode.number || 1}`,
         url: episode.link || episode.episodeLink || "empty",
-        quality: episode.link || episode.quality || "Testing",
+        quality: episode.quality || "Testing",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/Multiplugin/main/Assets/aniplus.png",
         headers: {

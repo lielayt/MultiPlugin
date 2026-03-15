@@ -2,10 +2,10 @@
 
 function toStream(episode) {
     return {
-        name: episode.link || "Aniplus",
-        title: episode.title || `Episode ${episode.number || 1}`,
+        name: "Aniplus",
+        title: episode.link || episode.title || `Episode ${episode.number || 1}`,
         url: episode.link || episode.episodeLink || "empty",
-        quality: episode.link || episode.quality || "Testing",
+        quality: episode.quality || "Testing",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/Multiplugin/main/Assets/aniplus.png",
         headers: {
