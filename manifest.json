@@ -14,7 +14,7 @@
       ],
       "filename": "providers/emby.js",
       "enabled": true,
-      "logo": "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/emby_edited.png",
+      "logo": "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/emby_edited.png",
       "contentLanguage": [
         "he",
         "en"
@@ -38,7 +38,7 @@
       ],
       "filename": "providers/aniplus.js",
       "enabled": true,
-      "logo": "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png",
+      "logo": "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/aniplus.png",
       "contentLanguage": [
         "jp",
         "en"
