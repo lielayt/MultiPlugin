@@ -57,13 +57,7 @@ async function decryptAniplus(videoId) {
             "Referer": BASE_URL + "/"
         }
     });
-    const buffer = await res.arrayBuffer();
-    const bytes = new Uint8Array(buffer);
-    let encrypted = "";
-    for (let i = 0; i < bytes.length; i++) {
-        encrypted += String.fromCharCode(bytes[i]);
-    }
-    encrypted = encrypted.trim();
+    const encrypted = await res.text();
     const ciphertext = CryptoJS.enc.Hex.parse(encrypted);
     const cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext });
     const decrypted = CryptoJS.AES.decrypt(cipherParams, key, {
@@ -105,8 +99,12 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     const identifier = alt.episodeLink.split("#")[1];
 
     try {
-        const result = await decryptAniplus(identifier);
-        alt.link = result.tiktok;
+        //const result = await decryptAniplus(identifier);
+        const res = await fetch("https://aniplus.lielayt.workers.dev/?id="+identifier)
+        const text = await res.text()
+        const data = JSON.parse(text)
+        console.log("data: ",data)
+        alt.link = data.tiktok;
     } catch(e) {
         alt.title = "Decrypt ERR:" + e.message;
         alt.link = null;
