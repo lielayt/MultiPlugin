@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T13:52:03.108Z
+ * Generated: 2026-03-15T14:38:52.340Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -134,7 +134,7 @@ var require_extractor = __commonJS({
       return {
         name: "Aniplus",
         title: episode.title || `Episode ${episode.number || 1}`,
-        url: episode.link || episode.episodeLink || "empty",
+        url: "https://anipluspro.upn.one/hls/8_gvjImIC2qMnFBWONtwow/6hf/6spnib6f/iuthbu/tt/master.m3u8?v=1766826492",
         quality: episode.quality || "Testing",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/Multiplugin/main/Assets/aniplus.png",
