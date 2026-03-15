@@ -1,14 +1,30 @@
-const { getStreams } = require('./providers/aniplus.js');
+const { getStreams: getAniPlus } = require('./providers/aniplus.js');
+const { getStreams: getEmby } = require('./providers/emby.js');
 
-async function run() {
-    console.log("Fetching streams...");
+async function testAniPlus() {
+    console.log("Fetching AniPlus streams...");
     try {
-        const streams = await getStreams('1429', 'tv','2','3'); // hunter
-        console.log(streams);
+        const streams = await getAniPlus('1429', 'tv', '2', '3'); // example: hunter
+        console.log("AniPlus:", streams);
     } catch (e) {
-        console.error(e);
+        console.error("AniPlus Error:", e);
     }
 }
-run();
 
+async function testEmby() {
+    console.log("Fetching Emby streams...");
+    try {
+        const streams = await getEmby('1429', 'tv', '2', '3'); // example: hunter
+        console.log("Emby:", streams);
+    } catch (e) {
+        console.error("Emby Error:", e);
+    }
+}
 
+// Run both tests sequentially
+async function runAll() {
+    await testAniPlus();
+    await testEmby();
+}
+
+runAll();
