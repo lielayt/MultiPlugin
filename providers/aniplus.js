@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T11:11:48.372Z
+ * Generated: 2026-03-15T11:22:26.385Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -108,7 +108,7 @@ var require_extractor = __commonJS({
         url: episode.link || episode.episodeLink || "empty",
         quality: episode.quality || "Testing",
         provider: "aniplus",
-        logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png",
+        logo: "https://raw.githubusercontent.com/lielayt/Multiplugin/main/Assets/aniplus.png",
         headers: {
           "User-Agent": "Mozilla/5.0",
           "Referer": "https://anipluspro.upn.one/",

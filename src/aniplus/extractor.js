@@ -7,7 +7,7 @@ function toStream(episode) {
         url: episode.link || episode.episodeLink || "empty",
         quality: episode.quality || "Testing",
         provider: "aniplus",
-        logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/aniplus.png",
+        logo: "https://raw.githubusercontent.com/lielayt/Multiplugin/main/Assets/aniplus.png",
         headers: {
                       "User-Agent": "Mozilla/5.0",
                       "Referer" : "https://anipluspro.upn.one/",
