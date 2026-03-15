@@ -57,7 +57,13 @@ async function decryptAniplus(videoId) {
             "Referer": BASE_URL + "/"
         }
     });
-    const encrypted = await res.text();
+    const buffer = await res.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    let encrypted = "";
+    for (let i = 0; i < bytes.length; i++) {
+        encrypted += String.fromCharCode(bytes[i]);
+    }
+    encrypted = encrypted.trim();
     const ciphertext = CryptoJS.enc.Hex.parse(encrypted);
     const cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext });
     const decrypted = CryptoJS.AES.decrypt(cipherParams, key, {

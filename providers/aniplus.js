@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T18:40:25.899Z
+ * Generated: 2026-03-15T18:45:40.720Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -105,7 +105,7 @@ var require_extractor = __commonJS({
       return {
         name: "Aniplus",
         title: episode.link || episode.title || `Episode ${episode.number || 1}`,
-        url: "https://anipluspro.upn.one/api/v1/video?id=rcahy5&w=1536&h=864&r=",
+        url: episode.link || episode.episodeLink || "empty",
         quality: episode.quality || "Testing",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/Multiplugin/main/Assets/aniplus.png",
@@ -178,7 +178,13 @@ function decryptAniplus(videoId) {
         "Referer": BASE_URL + "/"
       }
     });
-    const encrypted = yield res.text();
+    const buffer = yield res.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    let encrypted = "";
+    for (let i = 0; i < bytes.length; i++) {
+      encrypted += String.fromCharCode(bytes[i]);
+    }
+    encrypted = encrypted.trim();
     const ciphertext = CryptoJS.enc.Hex.parse(encrypted);
     const cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext });
     const decrypted = CryptoJS.AES.decrypt(cipherParams, key, {
