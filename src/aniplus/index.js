@@ -50,14 +50,28 @@ async function decryptAniplus(videoId) {
     const key = deriveKey();
     const iv = deriveIV(videoId);
     const url = `${BASE_URL}/api/v1/video?id=${videoId}&w=1920&h=1080&r=`;
+
     const res = await fetch(url, {
         headers: {
             "User-Agent": "Mozilla/5.0",
             "Origin": BASE_URL,
-            "Referer": BASE_URL + "/"
+            "Referer": BASE_URL + "/",
+            "Accept": "text/plain, */*"
         }
     });
-    const encrypted = await res.text();
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    // Read as ArrayBuffer to bypass Nuvio's octet-stream OOM block,
+    // then decode bytes manually to a hex string
+    const buffer = await res.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    let encrypted = "";
+    for (let i = 0; i < bytes.length; i++) {
+        encrypted += String.fromCharCode(bytes[i]);
+    }
+    encrypted = encrypted.trim();
+
     const ciphertext = CryptoJS.enc.Hex.parse(encrypted);
     const cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext });
     const decrypted = CryptoJS.AES.decrypt(cipherParams, key, {
@@ -65,12 +79,15 @@ async function decryptAniplus(videoId) {
         mode: CryptoJS.mode.CBC,
         padding: CryptoJS.pad.Pkcs7
     });
+
     let decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
     const lastBraceIndex = decryptedText.lastIndexOf('}');
     if (lastBraceIndex !== -1) decryptedText = decryptedText.substring(0, lastBraceIndex + 1);
+
     const data = JSON.parse(decryptedText);
     const config = JSON.parse(data.streamingConfig);
     const ttV = config.adjust.Tiktok.params.v;
+
     return {
         tiktok: data.hlsVideoTiktok ? BASE_URL + data.hlsVideoTiktok + "?v=" + ttV : null,
         cloudflare: data.cf || null,
@@ -96,15 +113,22 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     if (alive) return [toStream(ep)];
 
     const alt = await getAlternativeEpisodeLink(ep.episode_id);
+    if (!alt || !alt.episodeLink) return [];
+
     const identifier = alt.episodeLink.split("#")[1];
+    if (!identifier) {
+        alt.link = alt.episodeLink;
+        return [toStream(alt)];
+    }
 
     try {
         const result = await decryptAniplus(identifier);
-        alt.link = result.tiktok;
+        alt.link = result.tiktok || result.cloudflare || result.inhouse;
     } catch(e) {
         alt.title = "Decrypt ERR:" + e.message;
         alt.link = null;
     }
+
     return [toStream(alt)];
 }
 

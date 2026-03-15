@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T18:27:32.983Z
+ * Generated: 2026-03-15T18:34:02.770Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -175,10 +175,19 @@ function decryptAniplus(videoId) {
       headers: {
         "User-Agent": "Mozilla/5.0",
         "Origin": BASE_URL,
-        "Referer": BASE_URL + "/"
+        "Referer": BASE_URL + "/",
+        "Accept": "text/plain, */*"
       }
     });
-    const encrypted = yield res.text();
+    if (!res.ok)
+      throw new Error(`HTTP ${res.status}`);
+    const buffer = yield res.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    let encrypted = "";
+    for (let i = 0; i < bytes.length; i++) {
+      encrypted += String.fromCharCode(bytes[i]);
+    }
+    encrypted = encrypted.trim();
     const ciphertext = CryptoJS.enc.Hex.parse(encrypted);
     const cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext });
     const decrypted = CryptoJS.AES.decrypt(cipherParams, key, {
@@ -219,10 +228,16 @@ function getStreams(tmdbId, mediaType, season, episode) {
     if (alive)
       return [toStream(ep)];
     const alt = yield getAlternativeEpisodeLink(ep.episode_id);
+    if (!alt || !alt.episodeLink)
+      return [];
     const identifier = alt.episodeLink.split("#")[1];
+    if (!identifier) {
+      alt.link = alt.episodeLink;
+      return [toStream(alt)];
+    }
     try {
       const result = yield decryptAniplus(identifier);
-      alt.link = result.tiktok;
+      alt.link = result.tiktok || result.cloudflare || result.inhouse;
     } catch (e) {
       alt.title = "Decrypt ERR:" + e.message;
       alt.link = null;
