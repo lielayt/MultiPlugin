@@ -26,8 +26,7 @@ const EXTERNAL_MODULES = [
     'react-native-cheerio',
     'cheerio',
     'crypto-js',
-    'axios',
-    'crypto'
+    'axios'
 ];
 
 // Get provider names from command line or discover all
