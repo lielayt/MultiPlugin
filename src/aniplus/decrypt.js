@@ -86,27 +86,29 @@ async function aesCbcDecrypt(hexData, key, iv) {
 
 // Main decrypt function
 async function decryptAniplus(videoId) {
-    // const key = deriveKey();
-    // const iv = deriveIV(videoId);
+    const key = deriveKey();
+    const iv = deriveIV(videoId);
 
-    // const url = `${BASE_URL}/api/v1/video?id=${videoId}&w=1920&h=1080&r=`;
+    const url = `${BASE_URL}/api/v1/video?id=${videoId}&w=1920&h=1080&r=`;
 
-    // const res = await fetch(url, {
-    //     headers: {
-    //         "User-Agent": "Mozilla/5.0",
-    //         "Origin": BASE_URL,
-    //         "Referer": BASE_URL + "/"
-    //     }
-    // });
+    const res = await fetch(url, {
+        headers: {
+            "User-Agent": "Mozilla/5.0",
+            "Origin": BASE_URL,
+            "Referer": BASE_URL + "/"
+        }
+    });
 
-    // const encrypted = await res.text();
-    // const data = JSON.parse(await aesCbcDecrypt(encrypted, key, iv));
+    const encrypted = await res.text();
+    const data = JSON.parse(await aesCbcDecrypt(encrypted, key, iv));
 
-    // const config = JSON.parse(data.streamingConfig);
-    // const ttV = config.adjust.Tiktok.params.v;
+    const config = JSON.parse(data.streamingConfig);
+    const ttV = config.adjust.Tiktok.params.v;
 
     return {
-        tiktok: "https://anipluspro.upn.one/hls/MwooI2TeN5lgF4OZe5hX2w/sc/yg6kbbwv/668gl/tt/master.m3u8?v=1766826492"
+        tiktok: data.hlsVideoTiktok ? BASE_URL + data.hlsVideoTiktok + "?v=" + ttV : null,
+        cloudflare: data.cf || null,
+        inhouse: data.source || null
     };
 }
 

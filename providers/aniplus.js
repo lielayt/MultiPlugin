@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T12:23:28.886Z
+ * Generated: 2026-03-15T12:24:09.295Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -123,10 +123,86 @@ var require_extractor = __commonJS({
 // src/aniplus/decrypt.js
 var require_decrypt = __commonJS({
   "src/aniplus/decrypt.js"(exports2, module2) {
+    var BASE_URL = "https://anipluspro.upn.one";
+    function deriveKey() {
+      const m = (...g) => String.fromCharCode(...g);
+      const p = (g, S) => g.codePointAt(S) || 0;
+      const PROTOCOL = "https:";
+      const P = "10", O = 110, q = 1;
+      let F = "";
+      const B = p("\u1D5F").toString().split("");
+      for (let pe = 0; pe < B.length; pe++)
+        F += m(P + B[pe]);
+      F += m(p(PROTOCOL, P / 10));
+      F += F.slice(1, 3);
+      F += m(O, O - 1, O + 7);
+      const ae = "3579".split("");
+      F += m(ae[3] + ae[2], ae[1] + ae[2]);
+      F += m(ae[0] * q + q + ae[3], ae[0] * q + q + ae[3]);
+      F += m(ae[3] * P + ae[3] * q, parseInt(ae.reverse().join("").slice(0, 2)));
+      return new TextEncoder().encode(F);
+    }
+    function deriveIV(videoId) {
+      const m = (...g) => String.fromCharCode(...g);
+      const p = (g, S2) => (g.codePointAt ? g.codePointAt(S2) : 0) || 0;
+      const PROTOCOL = "https:";
+      const HASH = "#" + videoId;
+      const S = PROTOCOL;
+      const Pp = S + "//";
+      const O = HASH;
+      const q2 = S.length * Pp.length;
+      const F = 1;
+      let B = "";
+      for (let ke = F; ke < 10; ke++)
+        B += m(ke + q2);
+      let ae = "";
+      ae = F + ae + F + ae + F;
+      const pe = ae.length * p(O, 0);
+      const Je = ae * F + S.length;
+      const k = Je + 4;
+      const ne = p(S, F);
+      const Ie = ne * F - 2;
+      B += m(q2, ae, pe, Je, k, ne, Ie);
+      return new TextEncoder().encode(B);
+    }
+    function aesCbcDecrypt(hexData, key, iv) {
+      return __async(this, null, function* () {
+        const cryptoKey = yield crypto.subtle.importKey(
+          "raw",
+          key,
+          { name: "AES-CBC" },
+          false,
+          ["decrypt"]
+        );
+        const data = new Uint8Array(hexData.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
+        const decrypted = yield crypto.subtle.decrypt(
+          { name: "AES-CBC", iv },
+          cryptoKey,
+          data
+        );
+        return new TextDecoder().decode(decrypted);
+      });
+    }
     function decryptAniplus2(videoId) {
       return __async(this, null, function* () {
+        const key = deriveKey();
+        const iv = deriveIV(videoId);
+        const url = `${BASE_URL}/api/v1/video?id=${videoId}&w=1920&h=1080&r=`;
+        const res = yield fetch(url, {
+          headers: {
+            "User-Agent": "Mozilla/5.0",
+            "Origin": BASE_URL,
+            "Referer": BASE_URL + "/"
+          }
+        });
+        const encrypted = yield res.text();
+        const data = JSON.parse(yield aesCbcDecrypt(encrypted, key, iv));
+        const config = JSON.parse(data.streamingConfig);
+        const ttV = config.adjust.Tiktok.params.v;
         return {
-          tiktok: "https://anipluspro.upn.one/hls/MwooI2TeN5lgF4OZe5hX2w/sc/yg6kbbwv/668gl/tt/master.m3u8?v=1766826492"
+          tiktok: data.hlsVideoTiktok ? BASE_URL + data.hlsVideoTiktok + "?v=" + ttV : null,
+          cloudflare: data.cf || null,
+          inhouse: data.source || null
         };
       });
     }
