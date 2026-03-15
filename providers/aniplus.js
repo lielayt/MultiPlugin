@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T11:22:26.385Z
+ * Generated: 2026-03-15T11:33:32.137Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -123,7 +123,6 @@ var require_extractor = __commonJS({
 // src/aniplus/decrypt.js
 var require_decrypt = __commonJS({
   "src/aniplus/decrypt.js"(exports2, module2) {
-    var crypto = require("crypto");
     var BASE_URL = "https://anipluspro.upn.one";
     function deriveKey() {
       const m = (...g) => String.fromCharCode(...g);
@@ -141,7 +140,7 @@ var require_decrypt = __commonJS({
       F += m(ae[3] + ae[2], ae[1] + ae[2]);
       F += m(ae[0] * q + q + ae[3], ae[0] * q + q + ae[3]);
       F += m(ae[3] * P + ae[3] * q, parseInt(ae.reverse().join("").slice(0, 2)));
-      return Buffer.from(F, "utf8");
+      return new TextEncoder().encode(F);
     }
     function deriveIV(videoId) {
       const m = (...g) => String.fromCharCode(...g);
@@ -164,15 +163,25 @@ var require_decrypt = __commonJS({
       const ne = p(S, F);
       const Ie = ne * F - 2;
       B += m(q2, ae, pe, Je, k, ne, Ie);
-      return Buffer.from(B, "utf8");
+      return new TextEncoder().encode(B);
     }
-    function decrypt(hexData, key, iv) {
-      const decipher = crypto.createDecipheriv("aes-128-cbc", key, iv);
-      const ciphertext = Buffer.from(hexData, "hex");
-      return Buffer.concat([
-        decipher.update(ciphertext),
-        decipher.final()
-      ]).toString("utf8");
+    function aesCbcDecrypt(hexData, key, iv) {
+      return __async(this, null, function* () {
+        const cryptoKey = yield crypto.subtle.importKey(
+          "raw",
+          key,
+          { name: "AES-CBC" },
+          false,
+          ["decrypt"]
+        );
+        const data = new Uint8Array(hexData.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
+        const decrypted = yield crypto.subtle.decrypt(
+          { name: "AES-CBC", iv },
+          cryptoKey,
+          data
+        );
+        return new TextDecoder().decode(decrypted);
+      });
     }
     function decryptAniplus2(videoId) {
       return __async(this, null, function* () {
@@ -187,7 +196,7 @@ var require_decrypt = __commonJS({
           }
         });
         const encrypted = yield res.text();
-        const data = JSON.parse(decrypt(encrypted, key, iv));
+        const data = JSON.parse(yield aesCbcDecrypt(encrypted, key, iv));
         const config = JSON.parse(data.streamingConfig);
         const ttV = config.adjust.Tiktok.params.v;
         return {

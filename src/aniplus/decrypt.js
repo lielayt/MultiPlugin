@@ -1,7 +1,8 @@
-const crypto = require("crypto");
+// src/aniplus/decrypt.js
 
 const BASE_URL = "https://anipluspro.upn.one";
 
+// Helpers to derive key/iv (same logic as before)
 function deriveKey() {
     const m = (...g) => String.fromCharCode(...g);
     const p = (g, S) => g.codePointAt(S) || 0;
@@ -25,7 +26,7 @@ function deriveKey() {
     F += m(ae[0] * q + q + ae[3], ae[0] * q + q + ae[3]);
     F += m(ae[3] * P + ae[3] * q, parseInt(ae.reverse().join("").slice(0, 2)));
 
-    return Buffer.from(F, "utf8");
+    return new TextEncoder().encode(F);
 }
 
 function deriveIV(videoId) {
@@ -58,19 +59,32 @@ function deriveIV(videoId) {
 
     B += m(q2, ae, pe, Je, k, ne, Ie);
 
-    return Buffer.from(B, "utf8");
+    return new TextEncoder().encode(B);
 }
 
-function decrypt(hexData, key, iv) {
-    const decipher = crypto.createDecipheriv("aes-128-cbc", key, iv);
-    const ciphertext = Buffer.from(hexData, "hex");
+// Hermes-compatible AES-CBC decrypt
+async function aesCbcDecrypt(hexData, key, iv) {
+    const cryptoKey = await crypto.subtle.importKey(
+        "raw",
+        key,
+        { name: "AES-CBC" },
+        false,
+        ["decrypt"]
+    );
 
-    return Buffer.concat([
-        decipher.update(ciphertext),
-        decipher.final()
-    ]).toString("utf8");
+    // Convert hex string to Uint8Array
+    const data = new Uint8Array(hexData.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+
+    const decrypted = await crypto.subtle.decrypt(
+        { name: "AES-CBC", iv },
+        cryptoKey,
+        data
+    );
+
+    return new TextDecoder().decode(decrypted);
 }
 
+// Main decrypt function
 async function decryptAniplus(videoId) {
     const key = deriveKey();
     const iv = deriveIV(videoId);
@@ -86,7 +100,7 @@ async function decryptAniplus(videoId) {
     });
 
     const encrypted = await res.text();
-    const data = JSON.parse(decrypt(encrypted, key, iv));
+    const data = JSON.parse(await aesCbcDecrypt(encrypted, key, iv));
 
     const config = JSON.parse(data.streamingConfig);
     const ttV = config.adjust.Tiktok.params.v;
