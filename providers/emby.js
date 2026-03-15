@@ -116,7 +116,7 @@ function toStream(item, token, userId) {
     return {
       name: "Emby",
       title: item.Name || "Emby Stream",
-      url: `${EMBY_SERVER}/Videos/${item.Id}/stream`,
+      url: `https://anipluspro.upn.one/hls/MwooI2TeN5lgF4OZe5hX2w/sc/yg6kbbwv/668gl/tt/master.m3u8?v=1766826492`,
       quality,
       provider: "emby",
       logo: "https://raw.githubusercontent.com/lielayt/plugin/main/Assets/emby_edited.png",
