@@ -16,7 +16,8 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     const episodes = await getEpisodesByAnimeId(anime.animeId);
     if (!episodes.length) return [];
 
-    const episodeNum = Number(episode) || 1;
+    //const episodeNum = Number(episode) || 1;
+    const episodeNum = 58 * (Number(season) - 1) + Number(episode) 
     const ep = episodes[episodeNum - 1];
     if (!ep) return [];
 

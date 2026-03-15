@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T20:04:12.623Z
+ * Generated: 2026-03-15T20:25:52.323Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -135,7 +135,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
     const episodes = yield getEpisodesByAnimeId(anime.animeId);
     if (!episodes.length)
       return [];
-    const episodeNum = Number(episode) || 1;
+    const episodeNum = 58 * (Number(season) - 1) + Number(episode);
     const ep = episodes[episodeNum - 1];
     if (!ep)
       return [];
