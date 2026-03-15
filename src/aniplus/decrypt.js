@@ -78,36 +78,10 @@ function aesCbcDecrypt(hexData, key, iv) {
 }
 
 async function decryptAniplus(videoId) {
-    const key = deriveKey();
-    const iv = deriveIV(videoId);
-
-    const url = `${BASE_URL}/api/v1/video?id=${videoId}&w=1920&h=1080&r=`;
-
-    const res = await fetch(url, {
-        headers: {
-            "User-Agent": "Mozilla/5.0",
-            "Origin": BASE_URL,
-            "Referer": BASE_URL + "/"
-        }
-    });
-
-    const encrypted = await res.text();
-
-    let decryptedText = aesCbcDecrypt(encrypted, key, iv);
-
-    const lastBraceIndex = decryptedText.lastIndexOf('}');
-    if (lastBraceIndex !== -1) {
-        decryptedText = decryptedText.substring(0, lastBraceIndex + 1);
-    }
-
-    const data = JSON.parse(decryptedText);
-    const config = JSON.parse(data.streamingConfig);
-    const ttV = config.adjust.Tiktok.params.v;
+  
 
     return {
-        tiktok: "https://anipluspro.upn.one/hls/8_gvjImIC2qMnFBWONtwow/6hf/6spnib6f/iuthbu/tt/master.m3u8?v=1766826492",
-        cloudflare: data.cf || null,
-        inhouse: data.source || null
+        tiktok: "https://anipluspro.upn.one/hls/8_gvjImIC2qMnFBWONtwow/6hf/6spnib6f/iuthbu/tt/master.m3u8?v=1766826492"
     };
 }
 
