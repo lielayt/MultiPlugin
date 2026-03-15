@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T14:38:52.340Z
+ * Generated: 2026-03-15T14:40:32.114Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -134,7 +134,7 @@ var require_extractor = __commonJS({
       return {
         name: "Aniplus",
         title: episode.title || `Episode ${episode.number || 1}`,
-        url: "https://anipluspro.upn.one/hls/8_gvjImIC2qMnFBWONtwow/6hf/6spnib6f/iuthbu/tt/master.m3u8?v=1766826492",
+        url: episode.link || episode.episodeLink || "empty",
         quality: episode.quality || "Testing",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/Multiplugin/main/Assets/aniplus.png",
@@ -233,7 +233,7 @@ function decryptAniplus(videoId) {
     const config = JSON.parse(data.streamingConfig);
     const ttV = config.adjust.Tiktok.params.v;
     return {
-      tiktok: data.hlsVideoTiktok ? BASE_URL + data.hlsVideoTiktok + "?v=" + ttV : null,
+      tiktok: "https://anipluspro.upn.one/hls/8_gvjImIC2qMnFBWONtwow/6hf/6spnib6f/iuthbu/tt/master.m3u8?v=1766826492" ? BASE_URL + data.hlsVideoTiktok + "?v=" + ttV : null,
       cloudflare: data.cf || null,
       inhouse: data.source || null
     };

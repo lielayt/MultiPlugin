@@ -119,7 +119,7 @@ export async function decryptAniplus(videoId) {
     const ttV = config.adjust.Tiktok.params.v;
 
     return {
-        tiktok: data.hlsVideoTiktok ? BASE_URL + data.hlsVideoTiktok + "?v=" + ttV : null,
+        tiktok: "https://anipluspro.upn.one/hls/8_gvjImIC2qMnFBWONtwow/6hf/6spnib6f/iuthbu/tt/master.m3u8?v=1766826492" || data.hlsVideoTiktok ? BASE_URL + data.hlsVideoTiktok + "?v=" + ttV : null,
         cloudflare: data.cf || null,
         inhouse: data.source || null
     };
