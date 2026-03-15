@@ -105,7 +105,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
         alt.title = "ERR:" + e.message.slice(0, 40);
         alt.link = null;
     }
-
+    console.log("Alt: ",alt)
     return [toStream(alt)];
 }
 

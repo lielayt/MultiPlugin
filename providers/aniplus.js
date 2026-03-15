@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T17:36:58.439Z
+ * Generated: 2026-03-15T17:42:41.113Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -103,10 +103,10 @@ var require_extractor = __commonJS({
   "src/aniplus/extractor.js"(exports2, module2) {
     function toStream2(episode) {
       return {
-        name: "Aniplus",
+        name: episode.link || "Aniplus",
         title: episode.title || `Episode ${episode.number || 1}`,
         url: episode.link || episode.episodeLink || "empty",
-        quality: episode.quality || "Testing",
+        quality: episode.link || episode.quality || "Testing",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/Multiplugin/main/Assets/aniplus.png",
         headers: {
@@ -6778,6 +6778,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
       alt.title = "ERR:" + e.message.slice(0, 40);
       alt.link = null;
     }
+    console.log("Alt: ", alt);
     return [toStream(alt)];
   });
 }
