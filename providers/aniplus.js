@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T19:16:09.151Z
+ * Generated: 2026-03-15T20:04:12.623Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -148,7 +148,6 @@ function getStreams(tmdbId, mediaType, season, episode) {
       const res = yield fetch("https://aniplus.lielayt.workers.dev/?id=" + identifier);
       const text = yield res.text();
       const data = JSON.parse(text);
-      console.log("data: ", data);
       alt.link = data.tiktok;
     } catch (e) {
       alt.title = "Decrypt ERR:" + e.message;
