@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T18:23:45.613Z
+ * Generated: 2026-03-15T18:25:59.513Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -225,7 +225,6 @@ function getStreams(tmdbId, mediaType, season, episode) {
       alt.link = result.tiktok;
     } catch (e) {
       alt.title = "Decrypt ERR:" + e.message.slice(0, 40);
-      alt.link = null;
     }
     return [toStream(alt)];
   });

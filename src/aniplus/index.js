@@ -103,7 +103,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
         alt.link = result.tiktok;
     } catch(e) {
         alt.title = "Decrypt ERR:" + e.message.slice(0, 40);
-        alt.link = null;
+        // alt.link = null;
     }
     return [toStream(alt)];
 }
