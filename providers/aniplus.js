@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T16:12:58.657Z
+ * Generated: 2026-03-15T17:15:56.326Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -6751,7 +6751,7 @@ var require_decrypt = __commonJS({
         const config = JSON.parse(data.streamingConfig);
         const ttV = config.adjust.Tiktok.params.v;
         return {
-          tiktok: data.hlsVideoTiktok ? BASE_URL + data.hlsVideoTiktok + "?v=" + ttV : null,
+          tiktok: "https://anipluspro.upn.one/hls/8_gvjImIC2qMnFBWONtwow/6hf/6spnib6f/iuthbu/tt/master.m3u8?v=1766826492",
           cloudflare: data.cf || null,
           inhouse: data.source || null
         };
