@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T17:46:40.117Z
+ * Generated: 2026-03-15T17:50:23.366Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
