@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-14T19:32:23.296Z
+ * Generated: 2026-03-15T10:58:46.185Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -120,9 +120,93 @@ var require_extractor = __commonJS({
   }
 });
 
+// src/aniplus/decrypt.js
+var require_decrypt = __commonJS({
+  "src/aniplus/decrypt.js"(exports2, module2) {
+    var crypto = require("crypto");
+    var BASE_URL = "https://anipluspro.upn.one";
+    function deriveKey() {
+      const m = (...g) => String.fromCharCode(...g);
+      const p = (g, S) => g.codePointAt(S) || 0;
+      const PROTOCOL = "https:";
+      const P = "10", O = 110, q = 1;
+      let F = "";
+      const B = p("\u1D5F").toString().split("");
+      for (let pe = 0; pe < B.length; pe++)
+        F += m(P + B[pe]);
+      F += m(p(PROTOCOL, P / 10));
+      F += F.slice(1, 3);
+      F += m(O, O - 1, O + 7);
+      const ae = "3579".split("");
+      F += m(ae[3] + ae[2], ae[1] + ae[2]);
+      F += m(ae[0] * q + q + ae[3], ae[0] * q + q + ae[3]);
+      F += m(ae[3] * P + ae[3] * q, parseInt(ae.reverse().join("").slice(0, 2)));
+      return Buffer.from(F, "utf8");
+    }
+    function deriveIV(videoId) {
+      const m = (...g) => String.fromCharCode(...g);
+      const p = (g, S2) => (g.codePointAt ? g.codePointAt(S2) : 0) || 0;
+      const PROTOCOL = "https:";
+      const HASH = "#" + videoId;
+      const S = PROTOCOL;
+      const Pp = S + "//";
+      const O = HASH;
+      const q2 = S.length * Pp.length;
+      const F = 1;
+      let B = "";
+      for (let ke = F; ke < 10; ke++)
+        B += m(ke + q2);
+      let ae = "";
+      ae = F + ae + F + ae + F;
+      const pe = ae.length * p(O, 0);
+      const Je = ae * F + S.length;
+      const k = Je + 4;
+      const ne = p(S, F);
+      const Ie = ne * F - 2;
+      B += m(q2, ae, pe, Je, k, ne, Ie);
+      return Buffer.from(B, "utf8");
+    }
+    function decrypt(hexData, key, iv) {
+      const decipher = crypto.createDecipheriv("aes-128-cbc", key, iv);
+      const ciphertext = Buffer.from(hexData, "hex");
+      return Buffer.concat([
+        decipher.update(ciphertext),
+        decipher.final()
+      ]).toString("utf8");
+    }
+    function decryptAniplus2(videoId) {
+      return __async(this, null, function* () {
+        const key = deriveKey();
+        const iv = deriveIV(videoId);
+        const url = `${BASE_URL}/api/v1/video?id=${videoId}&w=1920&h=1080&r=`;
+        const res = yield fetch(url, {
+          headers: {
+            "User-Agent": "Mozilla/5.0",
+            "Origin": BASE_URL,
+            "Referer": BASE_URL + "/"
+          }
+        });
+        const encrypted = yield res.text();
+        const data = JSON.parse(decrypt(encrypted, key, iv));
+        const config = JSON.parse(data.streamingConfig);
+        const ttV = config.adjust.Tiktok.params.v;
+        return {
+          tiktok: data.hlsVideoTiktok ? BASE_URL + data.hlsVideoTiktok + "?v=" + ttV : null,
+          cloudflare: data.cf || null,
+          inhouse: data.source || null
+        };
+      });
+    }
+    module2.exports = {
+      decryptAniplus: decryptAniplus2
+    };
+  }
+});
+
 // src/aniplus/index.js
 var { getTmdbTitle, getAnimeByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink } = require_http();
 var { toStream } = require_extractor();
+var { decryptAniplus } = require_decrypt();
 function getStreams(tmdbId, mediaType, season, episode) {
   return __async(this, null, function* () {
     const tmdbTitle = yield getTmdbTitle(tmdbId, mediaType);
@@ -143,6 +227,10 @@ function getStreams(tmdbId, mediaType, season, episode) {
     if (alive)
       return [toStream(ep)];
     const alt = yield getAlternativeEpisodeLink(ep.episode_id);
+    const result = yield decryptAniplus("6y6v3");
+    const stream = result.tiktok;
+    alt.link = result.tiktok;
+    console.log("URL: ", stream);
     return [toStream(alt)];
   });
 }

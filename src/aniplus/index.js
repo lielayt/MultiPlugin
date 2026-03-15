@@ -1,6 +1,7 @@
 // src/aniplus/index.js
 const { getTmdbTitle, getAnimeByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink } = require('./http');
 const { toStream } = require('./extractor');
+const { decryptAniplus } = require("./decrypt");
 
 async function getStreams(tmdbId, mediaType, season, episode) {
     // 1. Get TMDB title
@@ -24,6 +25,10 @@ async function getStreams(tmdbId, mediaType, season, episode) {
         return [toStream(ep)]
 
     const alt = await getAlternativeEpisodeLink(ep.episode_id)
+    const result = await decryptAniplus("6y6v3")
+    alt.link = result.tiktok
+    console.log("URL: ",stream)
+
     return [toStream(alt)]
 }
 
