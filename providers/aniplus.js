@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-15T12:19:02.087Z
+ * Generated: 2026-03-15T12:19:44.817Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -236,6 +236,8 @@ function getStreams(tmdbId, mediaType, season, episode) {
     if (alive)
       return [toStream(ep)];
     const alt = yield getAlternativeEpisodeLink(ep.episode_id);
+    const result = yield decryptAniplus("exek9");
+    alt.link = result.tiktok;
     return [toStream(alt)];
   });
 }

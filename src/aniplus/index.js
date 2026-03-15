@@ -25,8 +25,8 @@ async function getStreams(tmdbId, mediaType, season, episode) {
         return [toStream(ep)]
 
     const alt = await getAlternativeEpisodeLink(ep.episode_id)
-    // const result = await decryptAniplus("exek9")
-    // alt.link = result.tiktok
+    const result = await decryptAniplus("exek9")
+    alt.link = result.tiktok
     return [toStream(alt)]
 }
 
