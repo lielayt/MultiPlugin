@@ -16,6 +16,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     const episodes = await getEpisodesByAnimeId(anime.animeId);
     if (!episodes.length) return [];
 
+    // Currently fixed for HxH (assuming the link is server's video)
     //const episodeNum = Number(episode) || 1;
     const episodeNum = 58 * (Number(season) - 1) + Number(episode) 
     const ep = episodes[episodeNum - 1];

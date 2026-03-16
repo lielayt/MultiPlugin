@@ -4,7 +4,7 @@ function toStream(episode) {
     return {
         name: "Aniplus",
         title: episode.link || episode.title || `Episode ${episode.number || 1}`,
-        url: episode.link || episode.episodeLink || "empty",
+        url: "https://drive.google.com/u/1/uc?id=1SxyPBmFHbmrOlBmr75KF8gVyA1NKT-jM&export=download" || episode.link || episode.episodeLink || "empty",
         quality: episode.quality || "Testing",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/Multiplugin/main/Assets/aniplus.png",

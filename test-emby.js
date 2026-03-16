@@ -4,7 +4,7 @@ const { getStreams: getEmby } = require('./providers/emby.js');
 async function testAniPlus() {
     console.log("Fetching AniPlus streams...");
     try {
-        const streams = await getAniPlus('46298', 'tv', '2', '4'); // example: hunter
+        const streams = await getAniPlus('1429', 'tv', '1', '4'); // example: hunter
         console.log("AniPlus:", streams);
     } catch (e) {
         console.error("AniPlus Error:", e);
@@ -28,3 +28,5 @@ async function runAll() {
 }
 
 runAll();
+
+
