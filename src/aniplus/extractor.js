@@ -1,9 +1,10 @@
 // src/aniplus/extractor.js
 
 function toStream(episode) {
+
     return {
         name: "Aniplus",
-        title: episode.link || episode.title || `Episode ${episode.number || 1}`,
+        title: episode.title || `Episode ${episode.number || 1}`,
         url: episode.link || episode.episodeLink || "empty",
         quality: episode.quality || "Testing",
         provider: "aniplus",

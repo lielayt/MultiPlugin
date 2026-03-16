@@ -1,5 +1,5 @@
 // src/aniplus/index.js
-const { getTmdbTitle, getAnimeByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink } = require('./http');
+const { getTmdbTitle, getAnimeByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink, getGDriveDirectUrl } = require('./http');
 const { toStream } = require('./extractor');
 const CryptoJS = require('crypto-js');
 
@@ -24,6 +24,8 @@ async function getStreams(tmdbId, mediaType, season, episode) {
 
     const alive = await isUrlAlive(ep.link);
     if (alive) {
+        const actual_link = await getGDriveDirectUrl(ep.link)
+        ep.link = actual_link || ep.link
         return [toStream(ep)];
     }
     const alt = await getAlternativeEpisodeLink(ep.episode_id);
@@ -39,6 +41,9 @@ async function getStreams(tmdbId, mediaType, season, episode) {
         alt.title = "Decrypt ERR:" + e.message;
         alt.link = null;
     }
+
+    const actual_link = await getGDriveDirectUrl(alt.link)
+    alt.link = actual_link || alt.link
     return [toStream(alt)];
 }
 

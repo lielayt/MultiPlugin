@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-16T11:07:41.680Z
+ * Generated: 2026-03-16T11:22:43.867Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -87,8 +87,11 @@ var require_http = __commonJS({
         }
       });
     }
-    function getGDriveDirectUrl(fileId) {
+    function getGDriveDirectUrl2(url) {
       return __async(this, null, function* () {
+        if (!url.includes("drive.google"))
+          return null;
+        const fileId = url.split("file/d/")[1].split("/")[0];
         const initialUrl = `https://drive.usercontent.google.com/uc?id=${fileId}&export=download`;
         const res1 = yield fetch(initialUrl, {
           redirect: "follow",
@@ -119,7 +122,7 @@ var require_http = __commonJS({
       getEpisodesByAnimeId: getEpisodesByAnimeId2,
       getAlternativeEpisodeLink: getAlternativeEpisodeLink2,
       isUrlAlive: isUrlAlive2,
-      getGDriveDirectUrl
+      getGDriveDirectUrl: getGDriveDirectUrl2
     };
   }
 });
@@ -130,7 +133,7 @@ var require_extractor = __commonJS({
     function toStream2(episode) {
       return {
         name: "Aniplus",
-        title: episode.link || episode.title || `Episode ${episode.number || 1}`,
+        title: episode.title || `Episode ${episode.number || 1}`,
         url: episode.link || episode.episodeLink || "empty",
         quality: episode.quality || "Testing",
         provider: "aniplus",
@@ -147,7 +150,7 @@ var require_extractor = __commonJS({
 });
 
 // src/aniplus/index.js
-var { getTmdbTitle, getAnimeByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink } = require_http();
+var { getTmdbTitle, getAnimeByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink, getGDriveDirectUrl } = require_http();
 var { toStream } = require_extractor();
 var CryptoJS = require("crypto-js");
 function getStreams(tmdbId, mediaType, season, episode) {
@@ -167,6 +170,8 @@ function getStreams(tmdbId, mediaType, season, episode) {
       return [];
     const alive = yield isUrlAlive(ep.link);
     if (alive) {
+      const actual_link2 = yield getGDriveDirectUrl(ep.link);
+      ep.link = actual_link2 || ep.link;
       return [toStream(ep)];
     }
     const alt = yield getAlternativeEpisodeLink(ep.episode_id);
@@ -180,6 +185,8 @@ function getStreams(tmdbId, mediaType, season, episode) {
       alt.title = "Decrypt ERR:" + e.message;
       alt.link = null;
     }
+    const actual_link = yield getGDriveDirectUrl(alt.link);
+    alt.link = actual_link || alt.link;
     return [toStream(alt)];
   });
 }

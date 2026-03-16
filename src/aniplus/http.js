@@ -55,7 +55,14 @@ async function isUrlAlive(url, timeout = 5000) {
     }
 }
 
-async function getGDriveDirectUrl(fileId) {
+async function getGDriveDirectUrl(url) {
+
+
+  if (!url.includes("drive.google"))
+    return null
+    
+  const fileId = url.split("file/d/")[1].split("/")[0]
+
   const initialUrl = `https://drive.usercontent.google.com/uc?id=${fileId}&export=download`;
 
   // Step 1: Get the virus warning page
