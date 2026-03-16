@@ -25,7 +25,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     const alive = await isUrlAlive(ep.link);
     if (alive) {
         const actual_link = await getGDriveDirectUrl(ep.link)
-        ep.link = actual_link || ep.link
+        //ep.link = actual_link || ep.link
         return [toStream(ep)];
     }
     const alt = await getAlternativeEpisodeLink(ep.episode_id);
@@ -43,7 +43,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     }
 
     const actual_link = await getGDriveDirectUrl(alt.link)
-    alt.link = actual_link || alt.link
+    //alt.link = actual_link || alt.link
     return [toStream(alt)];
 }
 

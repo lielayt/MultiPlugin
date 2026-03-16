@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-16T11:41:05.064Z
+ * Generated: 2026-03-16T11:46:25.198Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -152,7 +152,6 @@ function getStreams(tmdbId, mediaType, season, episode) {
     const alive = yield isUrlAlive(ep.link);
     if (alive) {
       const actual_link2 = yield getGDriveDirectUrl(ep.link);
-      ep.link = actual_link2 || ep.link;
       return [toStream(ep)];
     }
     const alt = yield getAlternativeEpisodeLink(ep.episode_id);
@@ -167,7 +166,6 @@ function getStreams(tmdbId, mediaType, season, episode) {
       alt.link = null;
     }
     const actual_link = yield getGDriveDirectUrl(alt.link);
-    alt.link = actual_link || alt.link;
     return [toStream(alt)];
   });
 }
