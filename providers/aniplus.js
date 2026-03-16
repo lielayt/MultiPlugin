@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-16T09:19:52.616Z
+ * Generated: 2026-03-16T11:06:05.157Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -87,13 +87,39 @@ var require_http = __commonJS({
         }
       });
     }
+    function getGDriveDirectUrl(fileId) {
+      return __async(this, null, function* () {
+        const initialUrl = `https://drive.usercontent.google.com/uc?id=${fileId}&export=download`;
+        const res1 = yield fetch(initialUrl, {
+          redirect: "follow",
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"
+          }
+        });
+        const cookies = res1.headers.get("set-cookie") || "";
+        const html = yield res1.text();
+        const uuidMatch = html.match(/name="uuid"\s+value="([^"]+)"/);
+        const uuid = uuidMatch ? uuidMatch[1] : "";
+        console.log("UUID:", uuid);
+        const downloadUrl = `https://drive.usercontent.google.com/download?id=${fileId}&export=download&authuser=0&confirm=t&uuid=${uuid}`;
+        const res2 = yield fetch(downloadUrl, {
+          redirect: "follow",
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
+            "Cookie": cookies
+          }
+        });
+        return res2.url;
+      });
+    }
     module2.exports = {
       fetchJson,
       getTmdbTitle: getTmdbTitle2,
       getAnimeByName: getAnimeByName2,
       getEpisodesByAnimeId: getEpisodesByAnimeId2,
       getAlternativeEpisodeLink: getAlternativeEpisodeLink2,
-      isUrlAlive: isUrlAlive2
+      isUrlAlive: isUrlAlive2,
+      getGDriveDirectUrl
     };
   }
 });
@@ -105,7 +131,7 @@ var require_extractor = __commonJS({
       return {
         name: "Aniplus",
         title: episode.link || episode.title || `Episode ${episode.number || 1}`,
-        url: "https://drive.usercontent.google.com/download?id=1SxyPBmFHbmrOlBmr75KF8gVyA1NKT-jM&export=download&authuser=0&confirm=t&uuid=1e12d1b4-15de-4c2f-b80a-13708eea4bde",
+        url: episode.link || episode.episodeLink || "empty",
         quality: episode.quality || "Testing",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/Multiplugin/main/Assets/aniplus.png",
@@ -140,8 +166,9 @@ function getStreams(tmdbId, mediaType, season, episode) {
     if (!ep)
       return [];
     const alive = yield isUrlAlive(ep.link);
-    if (alive)
+    if (alive) {
       return [toStream(ep)];
+    }
     const alt = yield getAlternativeEpisodeLink(ep.episode_id);
     const identifier = alt.episodeLink.split("#")[1];
     try {

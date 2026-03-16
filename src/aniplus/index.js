@@ -9,7 +9,7 @@ const BASE_URL = "https://anipluspro.upn.one";
 async function getStreams(tmdbId, mediaType, season, episode) {
     const tmdbTitle = await getTmdbTitle(tmdbId, mediaType);
     if (!tmdbTitle) return [];
-
+    
     const anime = await getAnimeByName(tmdbTitle);
     if (!anime) return [];
 
@@ -23,8 +23,9 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     if (!ep) return [];
 
     const alive = await isUrlAlive(ep.link);
-    if (alive) return [toStream(ep)];
-
+    if (alive) {
+        return [toStream(ep)];
+    }
     const alt = await getAlternativeEpisodeLink(ep.episode_id);
     const identifier = alt.episodeLink.split("#")[1];
 

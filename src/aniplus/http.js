@@ -55,11 +55,45 @@ async function isUrlAlive(url, timeout = 5000) {
     }
 }
 
+async function getGDriveDirectUrl(fileId) {
+  const initialUrl = `https://drive.usercontent.google.com/uc?id=${fileId}&export=download`;
+
+  // Step 1: Get the virus warning page
+  const res1 = await fetch(initialUrl, {
+    redirect: 'follow',
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36'
+    }
+  });
+
+  const cookies = res1.headers.get('set-cookie') || '';
+  const html = await res1.text();
+
+  // Extract uuid from the form
+  const uuidMatch = html.match(/name="uuid"\s+value="([^"]+)"/);
+  const uuid = uuidMatch ? uuidMatch[1] : '';
+  console.log('UUID:', uuid);
+
+  // Step 2: Submit the form (click "Download anyway")
+  const downloadUrl = `https://drive.usercontent.google.com/download?id=${fileId}&export=download&authuser=0&confirm=t&uuid=${uuid}`;
+
+  const res2 = await fetch(downloadUrl, {
+    redirect: 'follow',
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
+      'Cookie': cookies
+    }
+  });
+
+  return res2.url;
+}
+
 module.exports = {
     fetchJson,
     getTmdbTitle,
     getAnimeByName,
     getEpisodesByAnimeId,
     getAlternativeEpisodeLink,
-    isUrlAlive
+    isUrlAlive,
+    getGDriveDirectUrl
 };

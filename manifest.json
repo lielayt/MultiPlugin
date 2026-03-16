@@ -34,7 +34,8 @@
       "version": "1.0.0",
       "author": "lielayt",
       "supportedTypes": [
-        "tv"
+        "tv",
+        "movie"
       ],
       "filename": "providers/aniplus.js",
       "enabled": true,
