@@ -73,8 +73,7 @@ async function getUrl(url){
             const res = await fetch("https://aniplus.lielayt.workers.dev/aniplus?id="+identifier)
             const text = await res.text()
             const data = JSON.parse(text)
-            actUrl = data.tiktok || data.cloudflare || data.inhouse || null;
-            actUrl = actUrl.replace(".txt",".m3u8")
+            actUrl = data.tiktok || data.inhouse || data.cloudflare || null;
         } catch(e) {
             actUrl = null;
         }

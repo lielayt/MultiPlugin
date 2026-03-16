@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-16T17:42:50.308Z
+ * Generated: 2026-03-16T17:48:49.585Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -107,8 +107,7 @@ var require_http = __commonJS({
             const res = yield fetch("https://aniplus.lielayt.workers.dev/aniplus?id=" + identifier);
             const text = yield res.text();
             const data = JSON.parse(text);
-            actUrl = data.tiktok || data.cloudflare || data.inhouse || null;
-            actUrl = actUrl.replace(".txt", ".m3u8");
+            actUrl = data.tiktok || data.inhouse || data.cloudflare || null;
           } catch (e) {
             actUrl = null;
           }
