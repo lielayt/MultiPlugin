@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-16T14:16:52.820Z
+ * Generated: 2026-03-16T17:20:46.414Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -96,6 +96,25 @@ var require_http = __commonJS({
         return directUrl;
       });
     }
+    function getUrl2(url) {
+      return __async(this, null, function* () {
+        if (url.includes("drive.google"))
+          return getGDriveDirectUrl2(url);
+        else if (url.includes("anipluspro")) {
+          const identifier = url.split("#")[1];
+          let actUrl = "";
+          try {
+            const res = yield fetch("https://aniplus.lielayt.workers.dev/aniplus?id=" + identifier);
+            const text = yield res.text();
+            const data = JSON.parse(text);
+            actUrl = data.tiktok || data.cloudflare || data.inhouse || null;
+          } catch (e) {
+            actUrl = null;
+          }
+          return actUrl;
+        }
+      });
+    }
     module2.exports = {
       fetchJson,
       getTmdbTitle: getTmdbTitle2,
@@ -103,7 +122,8 @@ var require_http = __commonJS({
       getEpisodesByAnimeId: getEpisodesByAnimeId2,
       getAlternativeEpisodeLink: getAlternativeEpisodeLink2,
       isUrlAlive: isUrlAlive2,
-      getGDriveDirectUrl: getGDriveDirectUrl2
+      getGDriveDirectUrl: getGDriveDirectUrl2,
+      getUrl: getUrl2
     };
   }
 });
@@ -131,7 +151,7 @@ var require_extractor = __commonJS({
 });
 
 // src/aniplus/index.js
-var { getTmdbTitle, getAnimeByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink, getGDriveDirectUrl } = require_http();
+var { getTmdbTitle, getAnimeByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink, getGDriveDirectUrl, getUrl } = require_http();
 var { toStream } = require_extractor();
 var CryptoJS = require("crypto-js");
 function getStreams(tmdbId, mediaType, season, episode) {
@@ -151,23 +171,14 @@ function getStreams(tmdbId, mediaType, season, episode) {
       return [];
     const alive = yield isUrlAlive(ep.link);
     if (alive) {
-      const actual_link2 = yield getGDriveDirectUrl(ep.link);
-      ep.link = actual_link2 || ep.link;
+      const actual_link = yield getGDriveDirectUrl(ep.link);
+      ep.link = actual_link || ep.link;
       return [toStream(ep)];
     }
     const alt = yield getAlternativeEpisodeLink(ep.episode_id);
-    const identifier = alt.episodeLink.split("#")[1];
-    try {
-      const res = yield fetch("https://aniplus.lielayt.workers.dev/aniplus?id=" + identifier);
-      const text = yield res.text();
-      const data = JSON.parse(text);
-      alt.link = data.tiktok;
-    } catch (e) {
-      alt.title = "Decrypt ERR:" + e.message;
-      alt.link = null;
-    }
-    const actual_link = yield getGDriveDirectUrl(alt.link);
-    alt.link = actual_link || alt.link;
+    const actLink = yield getUrl(alt.episodeLink);
+    alt.link = actLink;
+    alt.title = actLink ? alt.title : "Decrypt ERR";
     return [toStream(alt)];
   });
 }

@@ -63,6 +63,25 @@ async function getGDriveDirectUrl(driveUrl) {
   return directUrl;
 }
 
+async function getUrl(url){
+
+    if (url.includes("drive.google")) return getGDriveDirectUrl(url)
+    else if (url.includes("anipluspro")){
+        const identifier = url.split("#")[1];
+        let actUrl = ""
+        try {
+            const res = await fetch("https://aniplus.lielayt.workers.dev/aniplus?id="+identifier)
+            const text = await res.text()
+            const data = JSON.parse(text)
+            actUrl = data.tiktok || data.cloudflare || data.inhouse || null;
+        } catch(e) {
+            actUrl = null;
+        }
+        return actUrl
+    }
+
+}
+
 module.exports = {
     fetchJson,
     getTmdbTitle,
@@ -70,5 +89,6 @@ module.exports = {
     getEpisodesByAnimeId,
     getAlternativeEpisodeLink,
     isUrlAlive,
-    getGDriveDirectUrl
+    getGDriveDirectUrl,
+    getUrl
 };
