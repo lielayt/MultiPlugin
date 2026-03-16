@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-16T09:09:04.545Z
+ * Generated: 2026-03-16T09:19:52.616Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -105,7 +105,7 @@ var require_extractor = __commonJS({
       return {
         name: "Aniplus",
         title: episode.link || episode.title || `Episode ${episode.number || 1}`,
-        url: "https://drive.google.com/u/1/uc?id=1SxyPBmFHbmrOlBmr75KF8gVyA1NKT-jM&export=download",
+        url: "https://drive.usercontent.google.com/download?id=1SxyPBmFHbmrOlBmr75KF8gVyA1NKT-jM&export=download&authuser=0&confirm=t&uuid=1e12d1b4-15de-4c2f-b80a-13708eea4bde",
         quality: episode.quality || "Testing",
         provider: "aniplus",
         logo: "https://raw.githubusercontent.com/lielayt/Multiplugin/main/Assets/aniplus.png",
