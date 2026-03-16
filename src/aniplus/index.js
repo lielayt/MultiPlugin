@@ -43,7 +43,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     }
 
     const actual_link = await getGDriveDirectUrl(alt.link)
-    //alt.link = actual_link || alt.link
+    alt.link = actual_link || alt.link
     return [toStream(alt)];
 }
 
