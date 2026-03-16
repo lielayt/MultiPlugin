@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-16T11:22:43.867Z
+ * Generated: 2026-03-16T11:28:41.454Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -170,8 +170,6 @@ function getStreams(tmdbId, mediaType, season, episode) {
       return [];
     const alive = yield isUrlAlive(ep.link);
     if (alive) {
-      const actual_link2 = yield getGDriveDirectUrl(ep.link);
-      ep.link = actual_link2 || ep.link;
       return [toStream(ep)];
     }
     const alt = yield getAlternativeEpisodeLink(ep.episode_id);
