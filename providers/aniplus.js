@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-16T17:20:46.414Z
+ * Generated: 2026-03-16T17:42:50.308Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -108,6 +108,7 @@ var require_http = __commonJS({
             const text = yield res.text();
             const data = JSON.parse(text);
             actUrl = data.tiktok || data.cloudflare || data.inhouse || null;
+            actUrl = actUrl.replace(".txt", ".m3u8");
           } catch (e) {
             actUrl = null;
           }

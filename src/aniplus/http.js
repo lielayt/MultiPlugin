@@ -74,6 +74,7 @@ async function getUrl(url){
             const text = await res.text()
             const data = JSON.parse(text)
             actUrl = data.tiktok || data.cloudflare || data.inhouse || null;
+            actUrl = actUrl.replace(".txt",".m3u8")
         } catch(e) {
             actUrl = null;
         }
