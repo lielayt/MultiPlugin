@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-16T11:28:41.454Z
+ * Generated: 2026-03-16T11:31:23.226Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -91,26 +91,23 @@ var require_http = __commonJS({
       return __async(this, null, function* () {
         if (!url.includes("drive.google"))
           return null;
-        const fileId = url.split("file/d/")[1].split("/")[0];
+        const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        if (!match)
+          return null;
+        const fileId = match[1];
         const initialUrl = `https://drive.usercontent.google.com/uc?id=${fileId}&export=download`;
         const res1 = yield fetch(initialUrl, {
-          redirect: "follow",
-          headers: {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"
-          }
+          headers: { "User-Agent": "Mozilla/5.0" }
         });
-        const cookies = res1.headers.get("set-cookie") || "";
         const html = yield res1.text();
         const uuidMatch = html.match(/name="uuid"\s+value="([^"]+)"/);
-        const uuid = uuidMatch ? uuidMatch[1] : "";
-        console.log("UUID:", uuid);
-        const downloadUrl = `https://drive.usercontent.google.com/download?id=${fileId}&export=download&authuser=0&confirm=t&uuid=${uuid}`;
+        if (!uuidMatch) {
+          return res1.url;
+        }
+        const uuid = uuidMatch[1];
+        const downloadUrl = `https://drive.usercontent.google.com/download?id=${fileId}&export=download&confirm=t&uuid=${uuid}`;
         const res2 = yield fetch(downloadUrl, {
-          redirect: "follow",
-          headers: {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
-            "Cookie": cookies
-          }
+          headers: { "User-Agent": "Mozilla/5.0" }
         });
         return res2.url;
       });
@@ -170,6 +167,8 @@ function getStreams(tmdbId, mediaType, season, episode) {
       return [];
     const alive = yield isUrlAlive(ep.link);
     if (alive) {
+      const actual_link2 = yield getGDriveDirectUrl(ep.link);
+      ep.link = actual_link2 || ep.link;
       return [toStream(ep)];
     }
     const alt = yield getAlternativeEpisodeLink(ep.episode_id);

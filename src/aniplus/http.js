@@ -54,42 +54,39 @@ async function isUrlAlive(url, timeout = 5000) {
         return false; // fetch failed or timed out
     }
 }
-
 async function getGDriveDirectUrl(url) {
 
+  if (!url.includes("drive.google")) return null;
 
-  if (!url.includes("drive.google"))
-    return null
-    
-  const fileId = url.split("file/d/")[1].split("/")[0]
+  const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (!match) return null;
 
-  const initialUrl = `https://drive.usercontent.google.com/uc?id=${fileId}&export=download`;
+  const fileId = match[1];
 
-  // Step 1: Get the virus warning page
+  const initialUrl =
+    `https://drive.usercontent.google.com/uc?id=${fileId}&export=download`;
+
   const res1 = await fetch(initialUrl, {
-    redirect: 'follow',
-    headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36'
-    }
+    headers: { "User-Agent": "Mozilla/5.0" }
   });
 
-  const cookies = res1.headers.get('set-cookie') || '';
   const html = await res1.text();
 
-  // Extract uuid from the form
   const uuidMatch = html.match(/name="uuid"\s+value="([^"]+)"/);
-  const uuid = uuidMatch ? uuidMatch[1] : '';
-  console.log('UUID:', uuid);
 
-  // Step 2: Submit the form (click "Download anyway")
-  const downloadUrl = `https://drive.usercontent.google.com/download?id=${fileId}&export=download&authuser=0&confirm=t&uuid=${uuid}`;
+  if (!uuidMatch) {
+    // small files redirect directly
+    return res1.url;
+  }
+
+  const uuid = uuidMatch[1];
+
+  const downloadUrl =
+    `https://drive.usercontent.google.com/download?id=${fileId}` +
+    `&export=download&confirm=t&uuid=${uuid}`;
 
   const res2 = await fetch(downloadUrl, {
-    redirect: 'follow',
-    headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
-      'Cookie': cookies
-    }
+    headers: { "User-Agent": "Mozilla/5.0" }
   });
 
   return res2.url;
