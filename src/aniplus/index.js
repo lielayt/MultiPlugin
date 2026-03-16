@@ -33,7 +33,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
 
     try {
         //const result = await decryptAniplus(identifier);
-        const res = await fetch("https://aniplus.lielayt.workers.dev/?id="+identifier)
+        const res = await fetch("https://aniplus.lielayt.workers.dev/aniplus?id="+identifier)
         const text = await res.text()
         const data = JSON.parse(text)
         alt.link = data.tiktok;

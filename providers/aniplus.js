@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-16T11:31:23.226Z
+ * Generated: 2026-03-16T11:41:05.064Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -87,29 +87,13 @@ var require_http = __commonJS({
         }
       });
     }
-    function getGDriveDirectUrl2(url) {
+    function getGDriveDirectUrl2(driveUrl) {
       return __async(this, null, function* () {
-        if (!url.includes("drive.google"))
-          return null;
-        const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-        if (!match)
-          return null;
-        const fileId = match[1];
-        const initialUrl = `https://drive.usercontent.google.com/uc?id=${fileId}&export=download`;
-        const res1 = yield fetch(initialUrl, {
-          headers: { "User-Agent": "Mozilla/5.0" }
-        });
-        const html = yield res1.text();
-        const uuidMatch = html.match(/name="uuid"\s+value="([^"]+)"/);
-        if (!uuidMatch) {
-          return res1.url;
-        }
-        const uuid = uuidMatch[1];
-        const downloadUrl = `https://drive.usercontent.google.com/download?id=${fileId}&export=download&confirm=t&uuid=${uuid}`;
-        const res2 = yield fetch(downloadUrl, {
-          headers: { "User-Agent": "Mozilla/5.0" }
-        });
-        return res2.url;
+        const res = yield fetch(
+          `https://aniplus.lielayt.workers.dev/gdrive?url=${encodeURIComponent(driveUrl)}`
+        );
+        const { directUrl } = yield res.json();
+        return directUrl;
       });
     }
     module2.exports = {
@@ -174,7 +158,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
     const alt = yield getAlternativeEpisodeLink(ep.episode_id);
     const identifier = alt.episodeLink.split("#")[1];
     try {
-      const res = yield fetch("https://aniplus.lielayt.workers.dev/?id=" + identifier);
+      const res = yield fetch("https://aniplus.lielayt.workers.dev/aniplus?id=" + identifier);
       const text = yield res.text();
       const data = JSON.parse(text);
       alt.link = data.tiktok;

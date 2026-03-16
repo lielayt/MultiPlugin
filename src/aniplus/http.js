@@ -54,42 +54,13 @@ async function isUrlAlive(url, timeout = 5000) {
         return false; // fetch failed or timed out
     }
 }
-async function getGDriveDirectUrl(url) {
 
-  if (!url.includes("drive.google")) return null;
-
-  const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if (!match) return null;
-
-  const fileId = match[1];
-
-  const initialUrl =
-    `https://drive.usercontent.google.com/uc?id=${fileId}&export=download`;
-
-  const res1 = await fetch(initialUrl, {
-    headers: { "User-Agent": "Mozilla/5.0" }
-  });
-
-  const html = await res1.text();
-
-  const uuidMatch = html.match(/name="uuid"\s+value="([^"]+)"/);
-
-  if (!uuidMatch) {
-    // small files redirect directly
-    return res1.url;
-  }
-
-  const uuid = uuidMatch[1];
-
-  const downloadUrl =
-    `https://drive.usercontent.google.com/download?id=${fileId}` +
-    `&export=download&confirm=t&uuid=${uuid}`;
-
-  const res2 = await fetch(downloadUrl, {
-    headers: { "User-Agent": "Mozilla/5.0" }
-  });
-
-  return res2.url;
+async function getGDriveDirectUrl(driveUrl) {
+  const res = await fetch(
+    `https://aniplus.lielayt.workers.dev/gdrive?url=${encodeURIComponent(driveUrl)}`
+  );
+  const { directUrl } = await res.json();
+  return directUrl;
 }
 
 module.exports = {
