@@ -17,7 +17,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
 
     const episodeItem = await getEpisodeItem(tmdbId,tmdbTitle,mediaType,season,episode)
 
-    if (episodeItem.length === 0)
+    if (!episodeItem)
         return []
     // const anime = await getAnimeByName(tmdbTitle);
     // if (!anime) return [];
@@ -88,7 +88,7 @@ async function getEpisodeItem(tmdbId,tmdbTitle,mediaType,season,episode){
     const animeList = animeListByEng.filter(x => ids.has(x.animeId));
     
     if (animeList.length === 0)
-        return []
+        return null
 
     //console.log("list: ",animeList)
     // const matchingSeason = findSeasonByEpisodeDate(animeList,airDate)

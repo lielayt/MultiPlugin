@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-18T16:11:38.587Z
+ * Generated: 2026-03-18T16:29:45.416Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -231,9 +231,8 @@ function getStreams(tmdbId, mediaType, season, episode) {
     const tmdbTitle = mediaType === "movie" ? itemData.title : itemData.name;
     if (!tmdbTitle)
       return [];
-    console.log("Title: ", tmdbTitle);
     const episodeItem = yield getEpisodeItem(tmdbId, tmdbTitle, mediaType, season, episode);
-    if (episodeItem.length === 0)
+    if (!episodeItem)
       return [];
     const alive = yield isUrlAlive(episodeItem.link);
     if (alive) {
@@ -253,15 +252,13 @@ function getEpisodeItem(tmdbId, tmdbTitle, mediaType, season, episode) {
   return __async(this, null, function* () {
     const epData = yield getTmdbEpisode(tmdbId, season, episode);
     const hebrewName = yield getTmdbHebrewName(tmdbId, mediaType).then((name) => normalizeAnimeName(name));
-    console.log("hebrew: ", hebrewName);
     const absEpisode = yield getAbsoluteEpisode(tmdbId, season, episode);
     const animeListByHeb = yield getAnimeSeasonsByName(hebrewName);
     const animeListByEng = yield getAnimeSeasonsByName(tmdbTitle);
-    console.log("Heb:", animeListByHeb.length, "Eng:", animeListByEng.length);
     const ids = new Set(animeListByHeb.map((x) => x.animeId));
     const animeList = animeListByEng.filter((x) => ids.has(x.animeId));
     if (animeList.length === 0)
-      return [];
+      return null;
     const result = getSeasonEpisodeFromAbsolute(animeList, absEpisode);
     const seIndex = result.seasonIndex;
     const epIndex = result.episodeIndex;
