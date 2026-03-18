@@ -3,12 +3,12 @@ const { getStreams: getEmby } = require('./providers/emby.js');
 
 // 🔹 Define test cases
 const tests = [
-    { id: '1429', type: 'tv', season: '1', episode: '3' },
-    { id: '1429', type: 'tv', season: '3', episode: '16' },
-    { id: '1429', type: 'tv', season: '4', episode: '28' },
-    { id: '46298', type: 'tv', season: '2', episode: '70' },
-    { id: '95479', type: 'tv', season: '1', episode: '50' },
-    { id: '37854', type: 'tv', season: '21', episode: '892' }
+    // { id: '1429', type: 'tv', season: '1', episode: '3' },
+    // { id: '1429', type: 'tv', season: '3', episode: '16' },
+    // { id: '1429', type: 'tv', season: '4', episode: '28' },
+    { id: '46298', type: 'tv', season: '2', episode: '63' },
+    // { id: '95479', type: 'tv', season: '1', episode: '50' },
+    // { id: '37854', type: 'tv', season: '21', episode: '892' }
 ];
 
 // 🔹 AniPlus bulk test

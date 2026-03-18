@@ -39,13 +39,19 @@ async function getTmdbHebrewName(tmdbId, mediaType) {
     }
 }
 
-async function getTmdbEpisode(tmdbId, season, episode) {
-    const url = `https://api.themoviedb.org/3/tv/${tmdbId}/season/${season}/episode/${episode}?api_key=${TMDB_KEY}&language=en-US`;
+async function getTmdbEpisode(tmdbId, season) {
+    const url = `https://api.themoviedb.org/3/tv/${tmdbId}/season/${season}?api_key=${TMDB_KEY}&language=en-US`;
     try {
-        const data = await fetchJson(url);
-        return data;
-    } catch (err){
-        console.log(err)
+        const seasonData = await fetchJson(url);
+        if (!seasonData || !seasonData.episodes || !seasonData.episodes.length) {
+            return null; // no episodes found
+        }
+
+        // TMDB guarantees episodes array is ordered by episode_number
+        const firstEpisode = seasonData.episodes[0];
+        return firstEpisode;
+    } catch (err) {
+        console.log(err);
         return null;
     }
 }
@@ -133,7 +139,7 @@ async function getAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber) {
         if (!showRes.ok) throw new Error("TMDB request failed for show");
         const showData = await showRes.json();
 
-        let absolute = Number(episodeNumber);
+        let absolute = Number(episodeNumber); 
 
         // Sum episodes from all previous seasons
         for (const s of showData.seasons) {
@@ -149,7 +155,9 @@ async function getAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber) {
         const seasonData = await seasonRes.json();
 
         const firstEpNumber = seasonData.episodes[0].episode_number; // could be > 1
-        absolute += (1 - firstEpNumber); // adjust if season doesn’t start at 1
+
+        // disabling for now as nuvio seemed to normalize seasons starting with ep 1
+        //absolute += (1 - firstEpNumber); // adjust if season doesn’t start at 1
 
         return absolute;
 

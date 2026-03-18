@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-18T16:55:13.316Z
+ * Generated: 2026-03-18T21:32:54.732Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -69,12 +69,16 @@ var require_http = __commonJS({
         }
       });
     }
-    function getTmdbEpisode2(tmdbId, season, episode) {
+    function getTmdbEpisode2(tmdbId, season) {
       return __async(this, null, function* () {
-        const url = `https://api.themoviedb.org/3/tv/${tmdbId}/season/${season}/episode/${episode}?api_key=${TMDB_KEY}&language=en-US`;
+        const url = `https://api.themoviedb.org/3/tv/${tmdbId}/season/${season}?api_key=${TMDB_KEY}&language=en-US`;
         try {
-          const data = yield fetchJson(url);
-          return data;
+          const seasonData = yield fetchJson(url);
+          if (!seasonData || !seasonData.episodes || !seasonData.episodes.length) {
+            return null;
+          }
+          const firstEpisode = seasonData.episodes[0];
+          return firstEpisode;
         } catch (err) {
           console.log(err);
           return null;
@@ -174,7 +178,6 @@ var require_http = __commonJS({
             throw new Error("TMDB request failed for season");
           const seasonData = yield seasonRes.json();
           const firstEpNumber = seasonData.episodes[0].episode_number;
-          absolute += 1 - firstEpNumber;
           return absolute;
         } catch (e) {
           console.error("Error in getAbsoluteEpisode:", e);
@@ -250,7 +253,8 @@ function getStreams(tmdbId, mediaType, season, episode) {
 }
 function getEpisodeItem(tmdbId, tmdbTitle, mediaType, season, episode) {
   return __async(this, null, function* () {
-    const epData = yield getTmdbEpisode(tmdbId, season, episode);
+    const epData = yield getTmdbEpisode(tmdbId, season);
+    const firstEpIndex = epData.episode_number || null;
     const hebrewName = yield getTmdbHebrewName(tmdbId, mediaType).then((name) => normalizeAnimeName(name));
     const absEpisode = yield getAbsoluteEpisode(tmdbId, season, episode);
     const animeListByHeb = yield getAnimeSeasonsByName(hebrewName);
