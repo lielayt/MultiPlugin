@@ -9,29 +9,13 @@ const BASE_URL = "https://anipluspro.upn.one";
 async function getStreams(tmdbId, mediaType, season, episode) {
 
     const itemData = await getTmdbData(tmdbId,mediaType)
-    //console.log(itemData.original_name)
     const tmdbTitle = mediaType === "movie" ? itemData.title : itemData.name;
     if (!tmdbTitle) return [];
-    
-    //console.log("Title: ",tmdbTitle)
 
     const episodeItem = await getEpisodeItem(tmdbId,tmdbTitle,mediaType,season,episode)
 
     if (!episodeItem)
         return []
-    // const anime = await getAnimeByName(tmdbTitle);
-    // if (!anime) return [];
-
-    // const episodes = await getEpisodesByAnimeId(anime.animeId);
-    // if (!episodes.length) return [];
-
-    // // Currently fixed for HxH (assuming the link is server's video)
-    // //const episodeNum = Number(episode) || 1;
-    // const episodeNum = 58 * (Number(season) - 1) + Number(episode) 
-    // const ep = episodes[episodeNum - 1];
-    // if (!ep) return [];
-
-
 
     const alive = await isUrlAlive(episodeItem.link);
     if (alive) {
@@ -71,42 +55,46 @@ function findSeasonByEpisodeDate(animeList, episodeAirDate) {
 
 
 async function getEpisodeItem(tmdbId,tmdbTitle,mediaType,season,episode){
-    // test
 
     const epData = await getTmdbEpisode(tmdbId,season,episode)
-    //console.log(airDate)
 
-    const hebrewName = await getTmdbHebrewName(tmdbId,mediaType).then(name => normalizeAnimeName(name))
-    //console.log("hebrew: ",hebrewName)
+    const hebrewName = await getTmdbHebrewName(tmdbId,mediaType).then(name => name ? normalizeAnimeName(name) : null)
 
     const absEpisode = await getAbsoluteEpisode(tmdbId,season,episode)
+    if (absEpisode === null) {
+        console.error("getEpisodeItem: could not compute absolute episode number");
+        return null;
+    }
 
-    const animeListByHeb = await getAnimeSeasonsByName(hebrewName)
     const animeListByEng = await getAnimeSeasonsByName(tmdbTitle)
-    //console.log("Heb:", animeListByHeb.length, "Eng:", animeListByEng.length);
-    const ids = new Set(animeListByHeb.map(x => x.animeId));
-    const animeList = animeListByEng.filter(x => ids.has(x.animeId));
-    
+
+    let animeList = animeListByEng;
+
+    if (hebrewName) {
+        const animeListByHeb = await getAnimeSeasonsByName(hebrewName)
+        const ids = new Set(animeListByHeb.map(x => x.animeId));
+        const intersected = animeListByEng.filter(x => ids.has(x.animeId));
+        // Only use intersection if it returns results; otherwise fall back to English-only
+        if (intersected.length > 0) {
+            animeList = intersected;
+        }
+    }
+
     if (animeList.length === 0)
         return null
 
-    //console.log("list: ",animeList)
-    // const matchingSeason = findSeasonByEpisodeDate(animeList,airDate)
-    // console.log("matching object ",matchingSeason)
-
     const result = getSeasonEpisodeFromAbsolute(animeList,absEpisode)
+    if (!result) {
+        console.error("getEpisodeItem: episode beyond known seasons");
+        return null;
+    }
+
     const seIndex = result.seasonIndex
     const epIndex = result.episodeIndex
     const episodes = await getEpisodesByAnimeId(animeList[seIndex].animeId)
     const episodeItem = episodes[epIndex]
-    // console.log("Seasons: ",animeList)
-    // console.log("Absolute: ",absEpisode)
-    // console.log("Season and episode: ",result)
-    // console.log("Result array name: ",animeList[seIndex].englishName)
-    // console.log("Episode item: ",episodeItem)
-    return episodeItem
 
-    //////
+    return episodeItem
 }
 
 

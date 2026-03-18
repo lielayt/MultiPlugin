@@ -4,7 +4,18 @@ const TMDB_KEY = "36fb162e5c4e8f206515ddf92070d434";
 async function fetchJson(url, options = {}) {
     const res = await fetch(url, options);
     if (!res.ok) throw new Error(`HTTP ${res.status} - ${res.statusText}`);
-    return res.json();
+    return safeJson(res);
+}
+
+// Safe JSON parser — reads body as text first to avoid QuickJS parse errors
+async function safeJson(res) {
+    const text = await res.text();
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        console.error("fetch.json parse error: " + text.slice(0, 120));
+        return null;
+    }
 }
 
 // Get TMDB title by TMDB ID
@@ -127,11 +138,15 @@ async function getUrl(url){
 
 async function getAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber) {
     try {
-        // Fetch show info
         const showUrl = `https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${TMDB_KEY}&language=en-US`;
         const showRes = await fetch(showUrl);
         if (!showRes.ok) throw new Error("TMDB request failed for show");
-        const showData = await showRes.json();
+
+        const showData = await safeJson(showRes);
+        if (!showData || !showData.seasons) {
+            console.error("getAbsoluteEpisode: showData or seasons is null");
+            return null;
+        }
 
         let absolute = Number(episodeNumber);
 
@@ -146,10 +161,15 @@ async function getAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber) {
         const seasonUrl = `https://api.themoviedb.org/3/tv/${tmdbId}/season/${seasonNumber}?api_key=${TMDB_KEY}&language=en-US`;
         const seasonRes = await fetch(seasonUrl);
         if (!seasonRes.ok) throw new Error("TMDB request failed for season");
-        const seasonData = await seasonRes.json();
+
+        const seasonData = await safeJson(seasonRes);
+        if (!seasonData || !seasonData.episodes || !seasonData.episodes.length) {
+            console.error("getAbsoluteEpisode: seasonData or episodes is null");
+            return null;
+        }
 
         const firstEpNumber = seasonData.episodes[0].episode_number; // could be > 1
-        absolute += (1 - firstEpNumber); // adjust if season doesn’t start at 1
+        absolute += (1 - firstEpNumber); // adjust if season doesn't start at 1
 
         return absolute;
 

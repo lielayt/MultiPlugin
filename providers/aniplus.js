@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-18T16:29:45.416Z
+ * Generated: 2026-03-18T16:52:13.485Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -36,7 +36,18 @@ var require_http = __commonJS({
         const res = yield fetch(url, options);
         if (!res.ok)
           throw new Error(`HTTP ${res.status} - ${res.statusText}`);
-        return res.json();
+        return safeJson(res);
+      });
+    }
+    function safeJson(res) {
+      return __async(this, null, function* () {
+        const text = yield res.text();
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          console.error("fetch.json parse error: " + text.slice(0, 120));
+          return null;
+        }
       });
     }
     function getTmdbData2(tmdbId, mediaType) {
@@ -161,7 +172,11 @@ var require_http = __commonJS({
           const showRes = yield fetch(showUrl);
           if (!showRes.ok)
             throw new Error("TMDB request failed for show");
-          const showData = yield showRes.json();
+          const showData = yield safeJson(showRes);
+          if (!showData || !showData.seasons) {
+            console.error("getAbsoluteEpisode: showData or seasons is null");
+            return null;
+          }
           let absolute = Number(episodeNumber);
           for (const s of showData.seasons) {
             if (s.season_number > 0 && s.season_number < seasonNumber) {
@@ -172,7 +187,11 @@ var require_http = __commonJS({
           const seasonRes = yield fetch(seasonUrl);
           if (!seasonRes.ok)
             throw new Error("TMDB request failed for season");
-          const seasonData = yield seasonRes.json();
+          const seasonData = yield safeJson(seasonRes);
+          if (!seasonData || !seasonData.episodes || !seasonData.episodes.length) {
+            console.error("getAbsoluteEpisode: seasonData or episodes is null");
+            return null;
+          }
           const firstEpNumber = seasonData.episodes[0].episode_number;
           absolute += 1 - firstEpNumber;
           return absolute;
@@ -251,15 +270,29 @@ function getStreams(tmdbId, mediaType, season, episode) {
 function getEpisodeItem(tmdbId, tmdbTitle, mediaType, season, episode) {
   return __async(this, null, function* () {
     const epData = yield getTmdbEpisode(tmdbId, season, episode);
-    const hebrewName = yield getTmdbHebrewName(tmdbId, mediaType).then((name) => normalizeAnimeName(name));
+    const hebrewName = yield getTmdbHebrewName(tmdbId, mediaType).then((name) => name ? normalizeAnimeName(name) : null);
     const absEpisode = yield getAbsoluteEpisode(tmdbId, season, episode);
-    const animeListByHeb = yield getAnimeSeasonsByName(hebrewName);
+    if (absEpisode === null) {
+      console.error("getEpisodeItem: could not compute absolute episode number");
+      return null;
+    }
     const animeListByEng = yield getAnimeSeasonsByName(tmdbTitle);
-    const ids = new Set(animeListByHeb.map((x) => x.animeId));
-    const animeList = animeListByEng.filter((x) => ids.has(x.animeId));
+    let animeList = animeListByEng;
+    if (hebrewName) {
+      const animeListByHeb = yield getAnimeSeasonsByName(hebrewName);
+      const ids = new Set(animeListByHeb.map((x) => x.animeId));
+      const intersected = animeListByEng.filter((x) => ids.has(x.animeId));
+      if (intersected.length > 0) {
+        animeList = intersected;
+      }
+    }
     if (animeList.length === 0)
       return null;
     const result = getSeasonEpisodeFromAbsolute(animeList, absEpisode);
+    if (!result) {
+      console.error("getEpisodeItem: episode beyond known seasons");
+      return null;
+    }
     const seIndex = result.seasonIndex;
     const epIndex = result.episodeIndex;
     const episodes = yield getEpisodesByAnimeId(animeList[seIndex].animeId);
