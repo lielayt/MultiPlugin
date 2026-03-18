@@ -1,6 +1,6 @@
 /**
- * aniplus - Built from src/aniplus/
- * Generated: 2026-03-18T13:01:50.342Z
+ * aniplus\ - Built from src/aniplus\/
+ * Generated: 2026-03-17T21:38:51.523Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -47,24 +47,6 @@ var require_http = __commonJS({
           const data = yield fetchJson(url);
           return data;
         } catch (e) {
-          return null;
-        }
-      });
-    }
-    function getTmdbHebrewName2(tmdbId, mediaType) {
-      return __async(this, null, function* () {
-        const type = mediaType === "movie" ? "movie" : "tv";
-        const translationsUrl = `https://api.themoviedb.org/3/${type}/${tmdbId}/translations?api_key=${TMDB_KEY}`;
-        try {
-          const translations = yield fetchJson(translationsUrl);
-          if (!translations || !translations.translations)
-            return null;
-          const heTranslation = translations.translations.find((t) => t.iso_639_1 === "he");
-          if (!heTranslation || !heTranslation.data)
-            return null;
-          return mediaType === "movie" ? heTranslation.data.title : heTranslation.data.name;
-        } catch (err) {
-          console.error("Error fetching Hebrew name:", err);
           return null;
         }
       });
@@ -193,8 +175,7 @@ var require_http = __commonJS({
       getGDriveDirectUrl: getGDriveDirectUrl2,
       getUrl: getUrl2,
       getTmdbEpisode: getTmdbEpisode2,
-      getAbsoluteEpisode: getAbsoluteEpisode2,
-      getTmdbHebrewName: getTmdbHebrewName2
+      getAbsoluteEpisode: getAbsoluteEpisode2
     };
   }
 });
@@ -205,7 +186,7 @@ var require_extractor = __commonJS({
     function toStream2(episode) {
       return {
         name: "Aniplus",
-        title: episode.title || `Episode ${episode.episodeNumber || 1}`,
+        title: episode.title || `Episode ${episode.number || 1}`,
         url: episode.link || episode.episodeLink || "empty",
         quality: episode.link || episode.quality || "Testing",
         provider: "aniplus",
@@ -222,7 +203,7 @@ var require_extractor = __commonJS({
 });
 
 // src/aniplus/index.js
-var { getTmdbData, getAnimeByName, getAnimeSeasonsByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink, getGDriveDirectUrl, getUrl, getTmdbEpisode, getAbsoluteEpisode, getTmdbHebrewName } = require_http();
+var { getTmdbData, getAnimeByName, getAnimeSeasonsByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink, getGDriveDirectUrl, getUrl, getTmdbEpisode, getAbsoluteEpisode } = require_http();
 var { toStream } = require_extractor();
 var CryptoJS = require("crypto-js");
 function getStreams(tmdbId, mediaType, season, episode) {
@@ -231,36 +212,43 @@ function getStreams(tmdbId, mediaType, season, episode) {
     const tmdbTitle = mediaType === "movie" ? itemData.title : itemData.name;
     if (!tmdbTitle)
       return [];
-    const episodeItem = yield getEpisodeItem(tmdbId, tmdbTitle, mediaType, season, episode);
-    const alive = yield isUrlAlive(episodeItem.link);
+    yield getEpisodeItem(tmdbId, tmdbTitle, mediaType, season, episode);
+    const anime = yield getAnimeByName(tmdbTitle);
+    if (!anime)
+      return [];
+    const episodes = yield getEpisodesByAnimeId(anime.animeId);
+    if (!episodes.length)
+      return [];
+    const episodeNum = 58 * (Number(season) - 1) + Number(episode);
+    const ep = episodes[episodeNum - 1];
+    if (!ep)
+      return [];
+    const alive = yield isUrlAlive(ep.link);
     if (alive) {
-      const actual_link = yield getGDriveDirectUrl(episodeItem.link);
-      episodeItem.link = actual_link || episodeItem.link;
-      return [toStream(episodeItem)];
+      const actual_link = yield getGDriveDirectUrl(ep.link);
+      ep.link = actual_link || ep.link;
+      return [toStream(ep)];
     }
-    const alt = yield getAlternativeEpisodeLink(episodeItem.episode_id);
+    const alt = yield getAlternativeEpisodeLink(ep.episode_id);
     const actLink = yield getUrl(alt.episodeLink);
     alt.link = actLink;
     alt.title = actLink ? alt.title : "Decrypt ERR";
-    alt.episodeNumber = episodeItem.episodeNumber;
     return [toStream(alt)];
   });
 }
 function getEpisodeItem(tmdbId, tmdbTitle, mediaType, season, episode) {
   return __async(this, null, function* () {
     const epData = yield getTmdbEpisode(tmdbId, season, episode);
-    const hebrewName = yield getTmdbHebrewName(tmdbId, mediaType).then((name) => normalizeAnimeName(name));
     const absEpisode = yield getAbsoluteEpisode(tmdbId, season, episode);
-    const animeListByHeb = yield getAnimeSeasonsByName(hebrewName);
-    const animeListByEng = yield getAnimeSeasonsByName(tmdbTitle);
-    const ids = new Set(animeListByHeb.map((x) => x.animeId));
-    const animeList = animeListByEng.filter((x) => ids.has(x.animeId));
+    console.log("abs: ", absEpisode);
+    const animeList = yield getAnimeSeasonsByName(tmdbTitle);
     const result = getSeasonEpisodeFromAbsolute(animeList, absEpisode);
     const seIndex = result.seasonIndex;
     const epIndex = result.episodeIndex;
+    console.log(result);
     const episodes = yield getEpisodesByAnimeId(animeList[seIndex].animeId);
     const episodeItem = episodes[epIndex];
-    return episodeItem;
+    console.log("episode: ", episodeItem);
   });
 }
 function getSeasonEpisodeFromAbsolute(animeList, absEpisode) {
@@ -276,9 +264,6 @@ function getSeasonEpisodeFromAbsolute(animeList, absEpisode) {
     remaining -= season.episode;
   }
   return null;
-}
-function normalizeAnimeName(name) {
-  return name.replace(/[^a-zA-Z\u0590-\u05FF ]/g, "").replace(/\s+/g, " ").trim();
 }
 if (typeof module !== "undefined" && module.exports)
   module.exports = { getStreams };

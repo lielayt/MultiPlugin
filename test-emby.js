@@ -1,32 +1,49 @@
 const { getStreams: getAniPlus } = require('./providers/aniplus.js');
 const { getStreams: getEmby } = require('./providers/emby.js');
 
-async function testAniPlus() {
-    console.log("Fetching AniPlus streams...");
-    try {
-        const streams = await getAniPlus('1429', 'tv', '1', '1'); // example: hunter
-        console.log("AniPlus:", streams);
-    } catch (e) {
-        console.error("AniPlus Error:", e);
+// 🔹 Define test cases
+const tests = [
+    { id: '1429', type: 'tv', season: '1', episode: '1' },
+    { id: '1429', type: 'tv', season: '3', episode: '16' },
+    { id: '1429', type: 'tv', season: '4', episode: '28' },
+    { id: '46298', type: 'tv', season: '2', episode: '70' },
+    { id: '95479', type: 'tv', season: '1', episode: '50' }
+];
+
+// 🔹 AniPlus bulk test
+async function testAniPlusBulk(tests) {
+    console.log("===== AniPlus Tests =====");
+
+    for (const t of tests) {
+        try {
+            console.log(`\n[AniPlus] Testing ${t.id} S${t.season}E${t.episode}`);
+            const streams = await getAniPlus(t.id, t.type, t.season, t.episode);
+            console.log("Result:", streams);
+        } catch (e) {
+            console.error("AniPlus Error:", t, e);
+        }
     }
 }
 
-async function testEmby() {
-    console.log("Fetching Emby streams...");
-    try {
-        const streams = await getEmby('1429', 'tv', '2', '3'); // example: hunter
-        console.log("Emby:", streams);
-    } catch (e) {
-        console.error("Emby Error:", e);
+// 🔹 Emby bulk test
+async function testEmbyBulk(tests) {
+    console.log("\n===== Emby Tests =====");
+
+    for (const t of tests) {
+        try {
+            console.log(`\n[Emby] Testing ${t.id} S${t.season}E${t.episode}`);
+            const streams = await getEmby(t.id, t.type, t.season, t.episode);
+            console.log("Result:", streams);
+        } catch (e) {
+            console.error("Emby Error:", t, e);
+        }
     }
 }
 
-// Run both tests sequentially
+// 🔹 Run all tests sequentially
 async function runAll() {
-    await testAniPlus();
-    await testEmby();
+    await testAniPlusBulk(tests);
+    //await testEmbyBulk(tests);
 }
 
 runAll();
-
-
