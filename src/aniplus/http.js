@@ -62,7 +62,6 @@ async function getAnimeByName(name) {
 // Search for all anime seasons for a show and return it sorted
 async function getAnimeSeasonsByName(name) {
     const url = `https://server.chataniplus.com/anime/animesearch/${encodeURIComponent(name)}`;
-    
     const results = await fetchJson(url);
     if (!results || !results.length) return [];
 

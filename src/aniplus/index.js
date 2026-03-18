@@ -13,10 +13,12 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     const tmdbTitle = mediaType === "movie" ? itemData.title : itemData.name;
     if (!tmdbTitle) return [];
     
-    //console.log("Title: ",tmdbTitle)
+    console.log("Title: ",tmdbTitle)
 
     const episodeItem = await getEpisodeItem(tmdbId,tmdbTitle,mediaType,season,episode)
 
+    if (episodeItem.length === 0)
+        return []
     // const anime = await getAnimeByName(tmdbTitle);
     // if (!anime) return [];
 
@@ -75,15 +77,19 @@ async function getEpisodeItem(tmdbId,tmdbTitle,mediaType,season,episode){
     //console.log(airDate)
 
     const hebrewName = await getTmdbHebrewName(tmdbId,mediaType).then(name => normalizeAnimeName(name))
-    //console.log("hebrew: ",hebrewName)
+    console.log("hebrew: ",hebrewName)
 
     const absEpisode = await getAbsoluteEpisode(tmdbId,season,episode)
 
     const animeListByHeb = await getAnimeSeasonsByName(hebrewName)
     const animeListByEng = await getAnimeSeasonsByName(tmdbTitle)
-    //console.log("Heb:", animeListByHeb.length, "Eng:", animeListByEng.length);
+    console.log("Heb:", animeListByHeb.length, "Eng:", animeListByEng.length);
     const ids = new Set(animeListByHeb.map(x => x.animeId));
     const animeList = animeListByEng.filter(x => ids.has(x.animeId));
+    
+    if (animeList.length === 0)
+        return []
+
     //console.log("list: ",animeList)
     // const matchingSeason = findSeasonByEpisodeDate(animeList,airDate)
     // console.log("matching object ",matchingSeason)
