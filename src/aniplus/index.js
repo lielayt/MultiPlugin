@@ -88,7 +88,7 @@ async function getEpisodeItem(tmdbId,mediaType,season,episode){
     const animeListByEng = await getAnimeSeasonsByName(tmdbTitle)
     //console.log("Heb:", animeListByHeb.length, "Eng:", animeListByEng.length);
     const ids = new Set(animeListByHeb.map(x => x.animeId));
-    const animeList = animeListByEng.filter(x => ids.has(x.animeId));
+    const animeList = animeListByHeb.length > 0 ? animeListByEng.filter(x => ids.has(x.animeId)) : animeListByEng;
     
     if (animeList.length === 0)
         return null
@@ -133,7 +133,7 @@ function getSeasonEpisodeFromAbsolute(animeList, absEpisode) {
 }
 
 function normalizeAnimeName(name) {
-    return name
+    return name ? name
         // Normalize accented letters to base letters: "NFD" splits accents
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, '')         // Remove diacritics (accents)
@@ -141,7 +141,8 @@ function normalizeAnimeName(name) {
         .replace(/[^a-zA-Z\u0590-\u05FF ]/g, '') 
         // Collapse multiple spaces
         .replace(/\s+/g, ' ')
-        .trim();
+        .trim() 
+        : " ";
 }
 
 if (typeof module !== "undefined" && module.exports) module.exports = { getStreams };

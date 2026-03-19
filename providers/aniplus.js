@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-19T13:57:22.402Z
+ * Generated: 2026-03-19T17:14:53.656Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -308,7 +308,7 @@ function getEpisodeItem(tmdbId, mediaType, season, episode) {
     const animeListByHeb = yield getAnimeSeasonsByName(hebrewName);
     const animeListByEng = yield getAnimeSeasonsByName(tmdbTitle);
     const ids = new Set(animeListByHeb.map((x) => x.animeId));
-    const animeList = animeListByEng.filter((x) => ids.has(x.animeId));
+    const animeList = animeListByHeb.length > 0 ? animeListByEng.filter((x) => ids.has(x.animeId)) : animeListByEng;
     if (animeList.length === 0)
       return null;
     const result = getSeasonEpisodeFromAbsolute(animeList, absEpisode);
@@ -334,7 +334,7 @@ function getSeasonEpisodeFromAbsolute(animeList, absEpisode) {
   return null;
 }
 function normalizeAnimeName(name) {
-  return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z\u0590-\u05FF ]/g, "").replace(/\s+/g, " ").trim();
+  return name ? name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z\u0590-\u05FF ]/g, "").replace(/\s+/g, " ").trim() : " ";
 }
 if (typeof module !== "undefined" && module.exports)
   module.exports = { getStreams };
