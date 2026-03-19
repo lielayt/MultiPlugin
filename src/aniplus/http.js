@@ -92,16 +92,17 @@ async function getAlternativeEpisodeLink(EpisodeId){
 
 async function isUrlAlive(url, timeout = 5000) {
     try {
-        const controller = new AbortController();
-        const id = setTimeout(() => controller.abort(), timeout);
+        const fetchPromise = fetch(url, { method: 'HEAD' })
+            .then(res => res.ok || (res.status >= 300 && res.status < 400))
+            .catch(() => false);
 
-        const res = await fetch(url, { method: 'HEAD', signal: controller.signal });
-        clearTimeout(id);
+        const timeoutPromise = new Promise(resolve =>
+            setTimeout(() => resolve(false), timeout)
+        );
 
-        // Consider 2xx and 3xx responses as alive
-        return res.ok || (res.status >= 300 && res.status < 400);
+        return await Promise.race([fetchPromise, timeoutPromise]);
     } catch (err) {
-        return false; // fetch failed or timed out
+        return false;
     }
 }
 

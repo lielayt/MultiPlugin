@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-19T08:39:33.343Z
+ * Generated: 2026-03-19T08:53:46.836Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -121,11 +121,11 @@ var require_http = __commonJS({
     function isUrlAlive2(url, timeout = 5e3) {
       return __async(this, null, function* () {
         try {
-          const controller = new AbortController();
-          const id = setTimeout(() => controller.abort(), timeout);
-          const res = yield fetch(url, { method: "HEAD", signal: controller.signal });
-          clearTimeout(id);
-          return res.ok || res.status >= 300 && res.status < 400;
+          const fetchPromise = fetch(url, { method: "HEAD" }).then((res) => res.ok || res.status >= 300 && res.status < 400).catch(() => false);
+          const timeoutPromise = new Promise(
+            (resolve) => setTimeout(() => resolve(false), timeout)
+          );
+          return yield Promise.race([fetchPromise, timeoutPromise]);
         } catch (err) {
           return false;
         }
