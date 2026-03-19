@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-19T13:47:57.360Z
+ * Generated: 2026-03-19T13:57:22.402Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -284,7 +284,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
       return [];
     const alive = yield isUrlAlive(episodeItem.link);
     if (alive) {
-      const actual_link = yield getGDriveDirectUrl(episodeItem.link);
+      const actual_link = episodeItem.server === "googleDrive" ? yield getGDriveDirectUrl(episodeItem.link) : yield getUrl(episodeItem.link);
       episodeItem.link = actual_link || episodeItem.link;
       return [toStream(episodeItem)];
     }

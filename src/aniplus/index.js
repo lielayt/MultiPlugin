@@ -32,7 +32,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
 
     const alive = await isUrlAlive(episodeItem.link);
     if (alive) {
-        const actual_link = await getGDriveDirectUrl(episodeItem.link)
+        const actual_link = episodeItem.server === "googleDrive" ? await getGDriveDirectUrl(episodeItem.link) : await getUrl(episodeItem.link)
         episodeItem.link = actual_link || episodeItem.link
         return [toStream(episodeItem)];
     }
