@@ -1,5 +1,6 @@
 // src/aniplus/http.js
 const TMDB_KEY = "36fb162e5c4e8f206515ddf92070d434";
+const TVDB_KEY = "aa889110-d5b9-4f6c-883d-7970de04e9c7"
 
 async function fetchJson(url, options = {}) {
     const res = await fetch(url, options);
@@ -131,7 +132,7 @@ async function getUrl(url){
 
 }
 
-async function getAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber) {
+async function getTMDBAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber) {
     try {
         // Fetch show info
         const showUrl = `https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${TMDB_KEY}&language=en-US`;
@@ -167,6 +168,61 @@ async function getAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber) {
     }
 }
 
+let TVDB_JWT_TOKEN = null; // cached JWT
+
+
+async function getTVDBAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber) {
+    try {
+        // 1️⃣ Get TVDB ID from TMDb
+        const extRes = await fetch(
+            `https://api.themoviedb.org/3/tv/${tmdbId}/external_ids?api_key=${TMDB_KEY}`
+        );
+        if (!extRes.ok) throw new Error("TMDb external_ids request failed");
+        const extData = await extRes.json();
+        const tvdbId = extData.tvdb_id;
+        if (!tvdbId) return null;
+
+        // 2️⃣ Ensure TVDB JWT token
+        if (!TVDB_JWT_TOKEN) {
+            const loginRes = await fetch("https://api4.thetvdb.com/v4/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ apikey: TVDB_KEY })
+            });
+            if (!loginRes.ok) {
+                const text = await loginRes.text();
+                throw new Error("Failed to get TVDB token: " + text);
+            }
+            const loginData = await loginRes.json();
+            TVDB_JWT_TOKEN = loginData.data.token;
+        }
+
+        // 3️⃣ Fetch episodes from TVDB
+        const tvdbRes = await fetch(`https://api4.thetvdb.com/v4/series/${tvdbId}/episodes/default`, {
+            headers: { Authorization: `Bearer ${TVDB_JWT_TOKEN}` }
+        });
+        if (!tvdbRes.ok) {
+            const text = await tvdbRes.text();
+            console.error("TVDB ERROR:", tvdbRes.status, text);
+            return null;
+        }
+
+        const tvdbData = await tvdbRes.json();
+        const episodes = tvdbData.data?.episodes || [];
+
+        // 4️⃣ Find the correct episode
+        const ep = episodes.find(
+            e => e.seasonNumber === Number(seasonNumber) && e.number === Number(episodeNumber)
+        );
+
+        return ep?.absoluteNumber || null;
+
+    } catch (e) {
+        console.error("Error in getAbsoluteTVDB:", e);
+        return null;
+    }
+}
+
 module.exports = {
     fetchJson,
     getTmdbData,
@@ -178,6 +234,7 @@ module.exports = {
     getGDriveDirectUrl,
     getUrl,
     getTmdbEpisode,
-    getAbsoluteEpisode,
+    getTMDBAbsoluteEpisode,
+    getTVDBAbsoluteEpisode,
     getTmdbHebrewName
 };

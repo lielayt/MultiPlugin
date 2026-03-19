@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-18T21:32:54.732Z
+ * Generated: 2026-03-19T08:39:33.343Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -31,6 +31,7 @@ var __async = (__this, __arguments, generator) => {
 var require_http = __commonJS({
   "src/aniplus/http.js"(exports2, module2) {
     var TMDB_KEY = "36fb162e5c4e8f206515ddf92070d434";
+    var TVDB_KEY = "aa889110-d5b9-4f6c-883d-7970de04e9c7";
     function fetchJson(_0) {
       return __async(this, arguments, function* (url, options = {}) {
         const res = yield fetch(url, options);
@@ -158,7 +159,7 @@ var require_http = __commonJS({
         }
       });
     }
-    function getAbsoluteEpisode2(tmdbId, seasonNumber, episodeNumber) {
+    function getTMDBAbsoluteEpisode2(tmdbId, seasonNumber, episodeNumber) {
       return __async(this, null, function* () {
         try {
           const showUrl = `https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${TMDB_KEY}&language=en-US`;
@@ -185,6 +186,53 @@ var require_http = __commonJS({
         }
       });
     }
+    var TVDB_JWT_TOKEN = null;
+    function getTVDBAbsoluteEpisode2(tmdbId, seasonNumber, episodeNumber) {
+      return __async(this, null, function* () {
+        var _a;
+        try {
+          const extRes = yield fetch(
+            `https://api.themoviedb.org/3/tv/${tmdbId}/external_ids?api_key=${TMDB_KEY}`
+          );
+          if (!extRes.ok)
+            throw new Error("TMDb external_ids request failed");
+          const extData = yield extRes.json();
+          const tvdbId = extData.tvdb_id;
+          if (!tvdbId)
+            return null;
+          if (!TVDB_JWT_TOKEN) {
+            const loginRes = yield fetch("https://api4.thetvdb.com/v4/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ apikey: TVDB_KEY })
+            });
+            if (!loginRes.ok) {
+              const text = yield loginRes.text();
+              throw new Error("Failed to get TVDB token: " + text);
+            }
+            const loginData = yield loginRes.json();
+            TVDB_JWT_TOKEN = loginData.data.token;
+          }
+          const tvdbRes = yield fetch(`https://api4.thetvdb.com/v4/series/${tvdbId}/episodes/default`, {
+            headers: { Authorization: `Bearer ${TVDB_JWT_TOKEN}` }
+          });
+          if (!tvdbRes.ok) {
+            const text = yield tvdbRes.text();
+            console.error("TVDB ERROR:", tvdbRes.status, text);
+            return null;
+          }
+          const tvdbData = yield tvdbRes.json();
+          const episodes = ((_a = tvdbData.data) == null ? void 0 : _a.episodes) || [];
+          const ep = episodes.find(
+            (e) => e.seasonNumber === Number(seasonNumber) && e.number === Number(episodeNumber)
+          );
+          return (ep == null ? void 0 : ep.absoluteNumber) || null;
+        } catch (e) {
+          console.error("Error in getAbsoluteTVDB:", e);
+          return null;
+        }
+      });
+    }
     module2.exports = {
       fetchJson,
       getTmdbData: getTmdbData2,
@@ -196,7 +244,8 @@ var require_http = __commonJS({
       getGDriveDirectUrl: getGDriveDirectUrl2,
       getUrl: getUrl2,
       getTmdbEpisode: getTmdbEpisode2,
-      getAbsoluteEpisode: getAbsoluteEpisode2,
+      getTMDBAbsoluteEpisode: getTMDBAbsoluteEpisode2,
+      getTVDBAbsoluteEpisode: getTVDBAbsoluteEpisode2,
       getTmdbHebrewName: getTmdbHebrewName2
     };
   }
@@ -225,7 +274,7 @@ var require_extractor = __commonJS({
 });
 
 // src/aniplus/index.js
-var { getTmdbData, getAnimeByName, getAnimeSeasonsByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink, getGDriveDirectUrl, getUrl, getTmdbEpisode, getAbsoluteEpisode, getTmdbHebrewName } = require_http();
+var { getTmdbData, getAnimeByName, getAnimeSeasonsByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink, getGDriveDirectUrl, getUrl, getTmdbEpisode, getTMDBAbsoluteEpisode, getTVDBAbsoluteEpisode, getTmdbHebrewName } = require_http();
 var { toStream } = require_extractor();
 var CryptoJS = require("crypto-js");
 function getStreams(tmdbId, mediaType, season, episode) {
@@ -256,7 +305,7 @@ function getEpisodeItem(tmdbId, tmdbTitle, mediaType, season, episode) {
     const epData = yield getTmdbEpisode(tmdbId, season);
     const firstEpIndex = epData.episode_number || null;
     const hebrewName = yield getTmdbHebrewName(tmdbId, mediaType).then((name) => normalizeAnimeName(name));
-    const absEpisode = yield getAbsoluteEpisode(tmdbId, season, episode);
+    const absEpisode = yield getTVDBAbsoluteEpisode(tmdbId, season, episode);
     const animeListByHeb = yield getAnimeSeasonsByName(hebrewName);
     const animeListByEng = yield getAnimeSeasonsByName(tmdbTitle);
     const ids = new Set(animeListByHeb.map((x) => x.animeId));

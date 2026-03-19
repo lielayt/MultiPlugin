@@ -1,5 +1,5 @@
 // src/aniplus/index.js
-const { getTmdbData, getAnimeByName, getAnimeSeasonsByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink, getGDriveDirectUrl, getUrl, getTmdbEpisode, getAbsoluteEpisode, getTmdbHebrewName} = require('./http');
+const { getTmdbData, getAnimeByName, getAnimeSeasonsByName, getEpisodesByAnimeId, isUrlAlive, getAlternativeEpisodeLink, getGDriveDirectUrl, getUrl, getTmdbEpisode, getTMDBAbsoluteEpisode, getTVDBAbsoluteEpisode, getTmdbHebrewName} = require('./http');
 const { toStream } = require('./extractor');
 const CryptoJS = require('crypto-js');
 
@@ -80,7 +80,7 @@ async function getEpisodeItem(tmdbId,tmdbTitle,mediaType,season,episode){
     const hebrewName = await getTmdbHebrewName(tmdbId,mediaType).then(name => normalizeAnimeName(name))
     //console.log("hebrew: ",hebrewName)
 
-    const absEpisode = await getAbsoluteEpisode(tmdbId,season,episode)
+    const absEpisode = await getTVDBAbsoluteEpisode(tmdbId,season,episode)
 
     const animeListByHeb = await getAnimeSeasonsByName(hebrewName)
     const animeListByEng = await getAnimeSeasonsByName(tmdbTitle)
