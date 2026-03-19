@@ -8,14 +8,11 @@ const BASE_URL = "https://anipluspro.upn.one";
 
 async function getStreams(tmdbId, mediaType, season, episode) {
 
-    const itemData = await getTmdbData(tmdbId,mediaType)
-    //console.log(itemData.original_name)
-    const tmdbTitle = mediaType === "movie" ? itemData.title : itemData.name;
-    if (!tmdbTitle) return [];
     
-    //console.log("Title: ",tmdbTitle)
+    //console.log(itemData.original_name)
+    
 
-    const episodeItem = await getEpisodeItem(tmdbId,tmdbTitle,mediaType,season,episode)
+    const episodeItem = await getEpisodeItem(tmdbId,mediaType,season,episode)
 
     if (!episodeItem)
         return []
@@ -70,12 +67,17 @@ function findSeasonByEpisodeDate(animeList, episodeAirDate) {
 }
 
 
-async function getEpisodeItem(tmdbId,tmdbTitle,mediaType,season,episode){
+async function getEpisodeItem(tmdbId,mediaType,season,episode){
     // test
 
     // const epData = await getTmdbEpisode(tmdbId,season)
     // const firstEpIndex = epData.episode_number || null
     //console.log(airDate)
+    const itemData = await getTmdbData(tmdbId,mediaType)
+    const tmdbTitle = normalizeAnimeName(mediaType === "movie" ? itemData.title : itemData.name);
+    if (!tmdbTitle) return [];
+    
+    console.log("Title: ",tmdbTitle)
 
     const hebrewName = await getTmdbHebrewName(tmdbId,mediaType).then(name => normalizeAnimeName(name))
     //console.log("hebrew: ",hebrewName)
@@ -131,11 +133,15 @@ function getSeasonEpisodeFromAbsolute(animeList, absEpisode) {
 }
 
 function normalizeAnimeName(name) {
-    // Keep only Hebrew letters (\u0590-\u05FF) and English letters (a-z, A-Z), plus spaces
     return name
-        .replace(/[^a-zA-Z\u0590-\u05FF ]/g, '') // remove anything else
-        .replace(/\s+/g, ' ')                    // collapse multiple spaces
-        .trim();                                 // remove leading/trailing spaces
+        // Normalize accented letters to base letters: "NFD" splits accents
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, '')         // Remove diacritics (accents)
+        // Keep only English letters, Hebrew letters, and spaces
+        .replace(/[^a-zA-Z\u0590-\u05FF ]/g, '') 
+        // Collapse multiple spaces
+        .replace(/\s+/g, ' ')
+        .trim();
 }
 
 if (typeof module !== "undefined" && module.exports) module.exports = { getStreams };

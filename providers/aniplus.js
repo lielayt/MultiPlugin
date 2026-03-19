@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-19T09:04:16.306Z
+ * Generated: 2026-03-19T13:47:57.360Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -279,11 +279,7 @@ var { toStream } = require_extractor();
 var CryptoJS = require("crypto-js");
 function getStreams(tmdbId, mediaType, season, episode) {
   return __async(this, null, function* () {
-    const itemData = yield getTmdbData(tmdbId, mediaType);
-    const tmdbTitle = mediaType === "movie" ? itemData.title : itemData.name;
-    if (!tmdbTitle)
-      return [];
-    const episodeItem = yield getEpisodeItem(tmdbId, tmdbTitle, mediaType, season, episode);
+    const episodeItem = yield getEpisodeItem(tmdbId, mediaType, season, episode);
     if (!episodeItem)
       return [];
     const alive = yield isUrlAlive(episodeItem.link);
@@ -300,8 +296,13 @@ function getStreams(tmdbId, mediaType, season, episode) {
     return [toStream(alt)];
   });
 }
-function getEpisodeItem(tmdbId, tmdbTitle, mediaType, season, episode) {
+function getEpisodeItem(tmdbId, mediaType, season, episode) {
   return __async(this, null, function* () {
+    const itemData = yield getTmdbData(tmdbId, mediaType);
+    const tmdbTitle = normalizeAnimeName(mediaType === "movie" ? itemData.title : itemData.name);
+    if (!tmdbTitle)
+      return [];
+    console.log("Title: ", tmdbTitle);
     const hebrewName = yield getTmdbHebrewName(tmdbId, mediaType).then((name) => normalizeAnimeName(name));
     const absEpisode = yield getTVDBAbsoluteEpisode(tmdbId, season, episode);
     const animeListByHeb = yield getAnimeSeasonsByName(hebrewName);
@@ -333,7 +334,7 @@ function getSeasonEpisodeFromAbsolute(animeList, absEpisode) {
   return null;
 }
 function normalizeAnimeName(name) {
-  return name.replace(/[^a-zA-Z\u0590-\u05FF ]/g, "").replace(/\s+/g, " ").trim();
+  return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z\u0590-\u05FF ]/g, "").replace(/\s+/g, " ").trim();
 }
 if (typeof module !== "undefined" && module.exports)
   module.exports = { getStreams };
