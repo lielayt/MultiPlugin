@@ -73,8 +73,8 @@ function findSeasonByEpisodeDate(animeList, episodeAirDate) {
 async function getEpisodeItem(tmdbId,tmdbTitle,mediaType,season,episode){
     // test
 
-    const epData = await getTmdbEpisode(tmdbId,season)
-    const firstEpIndex = epData.episode_number || null
+    // const epData = await getTmdbEpisode(tmdbId,season)
+    // const firstEpIndex = epData.episode_number || null
     //console.log(airDate)
 
     const hebrewName = await getTmdbHebrewName(tmdbId,mediaType).then(name => normalizeAnimeName(name))

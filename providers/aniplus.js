@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-19T08:53:46.836Z
+ * Generated: 2026-03-19T09:04:16.306Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -302,8 +302,6 @@ function getStreams(tmdbId, mediaType, season, episode) {
 }
 function getEpisodeItem(tmdbId, tmdbTitle, mediaType, season, episode) {
   return __async(this, null, function* () {
-    const epData = yield getTmdbEpisode(tmdbId, season);
-    const firstEpIndex = epData.episode_number || null;
     const hebrewName = yield getTmdbHebrewName(tmdbId, mediaType).then((name) => normalizeAnimeName(name));
     const absEpisode = yield getTVDBAbsoluteEpisode(tmdbId, season, episode);
     const animeListByHeb = yield getAnimeSeasonsByName(hebrewName);
