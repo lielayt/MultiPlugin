@@ -1,6 +1,6 @@
 // src/aniplus/http.js
 const TMDB_KEY = "36fb162e5c4e8f206515ddf92070d434";
-const TVDB_KEY = "aa889110-d5b9-4f6c-883d-7970de04e9c7"
+const TVDB_KEY = "aa889110-d5b9-4f6c-883d-7970de04e9c7";
 
 async function fetchJson(url, options = {}) {
     const res = await fetch(url, options);
@@ -8,13 +8,11 @@ async function fetchJson(url, options = {}) {
     return res.json();
 }
 
-// Get TMDB title by TMDB ID
 async function getTmdbData(tmdbId, mediaType) {
     const type = mediaType === "movie" ? "movie" : "tv";
     const url = `https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${TMDB_KEY}&language=en-US`;
     try {
-        const data = await fetchJson(url);
-        return data
+        return await fetchJson(url);
     } catch {
         return null;
     }
@@ -23,16 +21,14 @@ async function getTmdbData(tmdbId, mediaType) {
 async function getTmdbHebrewName(tmdbId, mediaType) {
     const type = mediaType === "movie" ? "movie" : "tv";
     const translationsUrl = `https://api.themoviedb.org/3/${type}/${tmdbId}/translations?api_key=${TMDB_KEY}`;
-    
+
     try {
         const translations = await fetchJson(translationsUrl);
         if (!translations || !translations.translations) return null;
 
-        // Look for Hebrew translation
         const heTranslation = translations.translations.find(t => t.iso_639_1 === "he");
         if (!heTranslation || !heTranslation.data) return null;
 
-        // Return Hebrew title / name depending on media type
         return mediaType === "movie" ? heTranslation.data.title : heTranslation.data.name;
     } catch (err) {
         console.error("Error fetching Hebrew name:", err);
@@ -44,29 +40,21 @@ async function getTmdbEpisode(tmdbId, season) {
     const url = `https://api.themoviedb.org/3/tv/${tmdbId}/season/${season}?api_key=${TMDB_KEY}&language=en-US`;
     try {
         const seasonData = await fetchJson(url);
-        if (!seasonData || !seasonData.episodes || !seasonData.episodes.length) {
-            return null; // no episodes found
-        }
-
-        // TMDB guarantees episodes array is ordered by episode_number
-        const firstEpisode = seasonData.episodes[0];
-        return firstEpisode;
+        if (!seasonData || !seasonData.episodes || !seasonData.episodes.length) return null;
+        return seasonData.episodes[0];
     } catch (err) {
         console.log(err);
         return null;
     }
 }
 
-
-// Search AniPlus anime by name
 async function getAnimeByName(name) {
     const url = `https://server.chataniplus.com/anime/animesearch/${encodeURIComponent(name)}`;
     const results = await fetchJson(url);
     if (!results || !results.length) return null;
-    return results[0]; // return first result
+    return results[0];
 }
 
-// Search for all anime seasons for a show and return it sorted
 async function getAnimeSeasonsByName(name) {
     const url = `https://server.chataniplus.com/anime/animesearch/${encodeURIComponent(name)}`;
     const results = await fetchJson(url);
@@ -74,105 +62,47 @@ async function getAnimeSeasonsByName(name) {
 
     return results
         .filter(a => a.Type === "אנימה")
-        .sort((a, b) => new Date(a.date) - new Date(b.date)); // oldest → newest
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
 }
 
-// Get episodes of an anime by its ID
 async function getEpisodesByAnimeId(animeId) {
     const url = `https://server.chataniplus.com/anime/getEpisodesByAnimeId/${animeId}`;
     const episodes = await fetchJson(url);
     return episodes || [];
 }
 
-async function getAlternativeEpisodeLink(EpisodeId){
+async function getAlternativeEpisodeLink(EpisodeId) {
     const url = `https://server.chataniplus.com/episode/getAnotherLinkEpisode/${EpisodeId}`;
-    const res = await fetchJson(url)
-    return res[0] || []
-}
-
-async function isUrlAlive(url, timeout = 5000) {
-    try {
-        const fetchPromise = fetch(url, { method: 'HEAD' })
-            .then(res => res.ok || (res.status >= 300 && res.status < 400))
-            .catch(() => false);
-
-        const timeoutPromise = new Promise(resolve =>
-            setTimeout(() => resolve(false), timeout)
-        );
-
-        return await Promise.race([fetchPromise, timeoutPromise]);
-    } catch (err) {
-        return false;
-    }
+    const res = await fetchJson(url);
+    return res[0] || [];
 }
 
 async function getGDriveDirectUrl(driveUrl) {
-  const res = await fetch(
-    `https://aniplus.lielayt.workers.dev/gdrive?url=${encodeURIComponent(driveUrl)}`
-  );
-  const { directUrl } = await res.json();
-  return directUrl;
+    const res = await fetch(
+        `https://aniplus.lielayt.workers.dev/gdrive?url=${encodeURIComponent(driveUrl)}`
+    );
+    const { directUrl } = await res.json();
+    return directUrl;
 }
 
-async function getUrl(url){
-
-    if (url.includes("drive.google")) return getGDriveDirectUrl(url)
-    else if (url.includes("anipluspro")){
+async function getUrl(url) {
+    if (url.includes("drive.google")) return getGDriveDirectUrl(url);
+    else if (url.includes("anipluspro")) {
         const identifier = url.split("#")[1];
-        let actUrl = ""
         try {
-            const res = await fetch("https://aniplus.lielayt.workers.dev/aniplus?id="+identifier)
-            const text = await res.text()
-            const data = JSON.parse(text)
-            actUrl = data.tiktok || data.inhouse || data.cloudflare || null;
-        } catch(e) {
-            actUrl = null;
+            const res = await fetch("https://aniplus.lielayt.workers.dev/aniplus?id=" + identifier);
+            const text = await res.text();
+            const data = JSON.parse(text);
+            return data.tiktok || data.inhouse || data.cloudflare || null;
+        } catch (e) {
+            return null;
         }
-        return actUrl
-    }
-
-}
-
-async function getTMDBAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber) {
-    try {
-        // Fetch show info
-        const showUrl = `https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${TMDB_KEY}&language=en-US`;
-        const showRes = await fetch(showUrl);
-        if (!showRes.ok) throw new Error("TMDB request failed for show");
-        const showData = await showRes.json();
-
-        let absolute = Number(episodeNumber); 
-
-        // Sum episodes from all previous seasons
-        for (const s of showData.seasons) {
-            if (s.season_number > 0 && s.season_number < seasonNumber) {
-                absolute += s.episode_count;
-            }
-        }
-
-        // Fetch the actual season to get first episode number
-        const seasonUrl = `https://api.themoviedb.org/3/tv/${tmdbId}/season/${seasonNumber}?api_key=${TMDB_KEY}&language=en-US`;
-        const seasonRes = await fetch(seasonUrl);
-        if (!seasonRes.ok) throw new Error("TMDB request failed for season");
-        const seasonData = await seasonRes.json();
-
-        const firstEpNumber = seasonData.episodes[0].episode_number; // could be > 1
-
-        // disabling for now as nuvio seemed to normalize seasons starting with ep 1
-        //absolute += (1 - firstEpNumber); // adjust if season doesn’t start at 1
-
-        return absolute;
-
-    } catch (e) {
-        console.error("Error in getAbsoluteEpisode:", e);
-        return null;
     }
 }
 
-let TVDB_JWT_TOKEN = null; // cached JWT
+let TVDB_JWT_TOKEN = null;
 
-
-async function getTVDBAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber) {
+async function getTVDBAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber, itemData = null) {
     try {
         // 1️⃣ Get TVDB ID from TMDb
         const extRes = await fetch(
@@ -231,11 +161,9 @@ module.exports = {
     getAnimeSeasonsByName,
     getEpisodesByAnimeId,
     getAlternativeEpisodeLink,
-    isUrlAlive,
     getGDriveDirectUrl,
     getUrl,
     getTmdbEpisode,
-    getTMDBAbsoluteEpisode,
     getTVDBAbsoluteEpisode,
     getTmdbHebrewName
 };
