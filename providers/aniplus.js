@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-21T09:59:02.239Z
+ * Generated: 2026-03-21T11:35:34.172Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -229,7 +229,7 @@ var require_http = __commonJS({
           resolvedUrl = yield getGDriveDirectUrl2(url);
           return { url: resolvedUrl, qualities: [] };
         }
-        if (url.includes("anipluspro")) {
+        if (url.includes("aniplus")) {
           const identifier = url.split("#")[1];
           try {
             const res = yield fetch("https://aniplus.lielayt.workers.dev/aniplus?id=" + identifier);
@@ -295,7 +295,7 @@ var require_http = __commonJS({
 var require_extractor = __commonJS({
   "src/aniplus/extractor.js"(exports2, module2) {
     function toStream2(episode) {
-      episode.server = episode.link.includes("google") ? "Google Drive" : "Internal";
+      episode.server = getServer(episode);
       return {
         name: "Aniplus",
         title: `Episode ${episode.episodeNumber || 1} | ${episode.server}`,
@@ -310,6 +310,10 @@ var require_extractor = __commonJS({
         }
       };
     }
+    function getServer(ep) {
+      const url = ep.link || ep.episodeLink;
+      return url.includes("google") ? "Google Drive" : "Internal";
+    }
     module2.exports = { toStream: toStream2 };
   }
 });
@@ -323,7 +327,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
     const episodeItem = yield getEpisodeItem(tmdbId, mediaType, season, episode);
     if (!episodeItem)
       return [];
-    const { url: actual_link, qualities } = episodeItem.server === "googleDrive" ? { url: yield getGDriveDirectUrl(episodeItem.link), qualities: [] } : yield getUrlAndQualities(episodeItem.link);
+    const { url: actual_link, qualities } = episodeItem.link.includes("drive.google") ? { url: yield getGDriveDirectUrl(episodeItem.link), qualities: [] } : yield getUrlAndQualities(episodeItem.link);
     if (actual_link) {
       episodeItem.link = actual_link;
       episodeItem.quality = qualities.length > 0 ? qualities[0].resolution.split("x")[1] + "p" : "Unknown quality";

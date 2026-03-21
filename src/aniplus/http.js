@@ -201,7 +201,7 @@ async function getUrlAndQualities(url) {
         return { url: resolvedUrl, qualities: [] };
     }
 
-    if (url.includes("anipluspro")) {
+    if (url.includes("aniplus")) {
         const identifier = url.split("#")[1];
         try {
             const res = await fetch("https://aniplus.lielayt.workers.dev/aniplus?id=" + identifier);

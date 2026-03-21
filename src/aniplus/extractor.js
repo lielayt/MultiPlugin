@@ -2,7 +2,7 @@
 
 function toStream(episode) {
 
-    episode.server = episode.link.includes("google") ? "Google Drive" : "Internal"
+    episode.server = getServer(episode)
 
     return {
         name: "Aniplus",
@@ -17,6 +17,13 @@ function toStream(episode) {
                       "Origin" : "https://anipluspro.upn.one"
                  }
     };
+}
+
+function getServer(ep){
+
+    const url = ep.link || ep.episodeLink
+    return url.includes("google") ? "Google Drive" : "Internal"
+
 }
 
 module.exports = { toStream };

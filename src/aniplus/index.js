@@ -10,10 +10,10 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     const episodeItem = await getEpisodeItem(tmdbId, mediaType, season, episode);
     if (!episodeItem) return [];
 
-    const { url: actual_link, qualities } = episodeItem.server === "googleDrive"
+    const { url: actual_link, qualities } = episodeItem.link.includes("drive.google")
         ? { url: await getGDriveDirectUrl(episodeItem.link), qualities: [] }
         : await getUrlAndQualities(episodeItem.link);
-
+    
     if (actual_link) {
         episodeItem.link = actual_link;
         episodeItem.quality = qualities.length > 0 ? qualities[0].resolution.split('x')[1] + 'p' : "Unknown quality";
