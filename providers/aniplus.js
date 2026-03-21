@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-03-20T18:27:41.603Z
+ * Generated: 2026-03-21T09:50:18.917Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -188,6 +188,91 @@ var require_http = __commonJS({
         }
       });
     }
+    function parseM3U8Qualities2(masterUrl) {
+      return __async(this, null, function* () {
+        var _a;
+        if (masterUrl.includes("google"))
+          return [];
+        const res = yield fetch(masterUrl, {
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+            "Referer": "https://anipluspro.upn.one/",
+            "Origin": "https://anipluspro.upn.one"
+          }
+        });
+        const text = yield res.text();
+        const base = masterUrl.substring(0, masterUrl.lastIndexOf("/") + 1);
+        const qualities = [];
+        const lines = text.split("\n");
+        for (let i = 0; i < lines.length; i++) {
+          if (lines[i].startsWith("#EXT-X-STREAM-INF")) {
+            const resMatch = lines[i].match(/RESOLUTION=(\d+x\d+)/);
+            const bwMatch = lines[i].match(/BANDWIDTH=(\d+)/);
+            const indexUrl = (_a = lines[i + 1]) == null ? void 0 : _a.trim();
+            if (indexUrl) {
+              qualities.push({
+                resolution: (resMatch == null ? void 0 : resMatch[1]) || "unknown",
+                bandwidth: bwMatch ? parseInt(bwMatch[1]) : 0,
+                url: base + indexUrl
+              });
+            }
+          }
+        }
+        return qualities;
+      });
+    }
+    function getUrlAndQualities2(url) {
+      return __async(this, null, function* () {
+        var _a;
+        let resolvedUrl = null;
+        if (url.includes("drive.google")) {
+          resolvedUrl = yield getGDriveDirectUrl2(url);
+          return { url: resolvedUrl, qualities: [] };
+        }
+        if (url.includes("anipluspro")) {
+          const identifier = url.split("#")[1];
+          try {
+            const res = yield fetch("https://aniplus.lielayt.workers.dev/aniplus?id=" + identifier);
+            const data = JSON.parse(yield res.text());
+            resolvedUrl = data.tiktok || data.inhouse || data.cloudflare || null;
+          } catch (e) {
+            return { url: null, qualities: [] };
+          }
+        }
+        if (!resolvedUrl)
+          return { url: null, qualities: [] };
+        try {
+          const res = yield fetch(resolvedUrl, {
+            headers: {
+              "User-Agent": "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+              "Referer": "https://anipluspro.upn.one/",
+              "Origin": "https://anipluspro.upn.one"
+            }
+          });
+          const text = yield res.text();
+          const base = resolvedUrl.substring(0, resolvedUrl.lastIndexOf("/") + 1);
+          const qualities = [];
+          const lines = text.split("\n");
+          for (let i = 0; i < lines.length; i++) {
+            if (lines[i].startsWith("#EXT-X-STREAM-INF")) {
+              const resMatch = lines[i].match(/RESOLUTION=(\d+x\d+)/);
+              const bwMatch = lines[i].match(/BANDWIDTH=(\d+)/);
+              const indexUrl = (_a = lines[i + 1]) == null ? void 0 : _a.trim();
+              if (indexUrl) {
+                qualities.push({
+                  resolution: (resMatch == null ? void 0 : resMatch[1]) || "unknown",
+                  bandwidth: bwMatch ? parseInt(bwMatch[1]) : 0,
+                  url: base + indexUrl
+                });
+              }
+            }
+          }
+          return { url: resolvedUrl, qualities };
+        } catch (e) {
+          return { url: resolvedUrl, qualities: [] };
+        }
+      });
+    }
     module2.exports = {
       fetchJson,
       getTmdbData: getTmdbData2,
@@ -199,7 +284,9 @@ var require_http = __commonJS({
       getUrl: getUrl2,
       getTmdbEpisode: getTmdbEpisode2,
       getTVDBAbsoluteEpisode: getTVDBAbsoluteEpisode2,
-      getTmdbHebrewName: getTmdbHebrewName2
+      getTmdbHebrewName: getTmdbHebrewName2,
+      parseM3U8Qualities: parseM3U8Qualities2,
+      getUrlAndQualities: getUrlAndQualities2
     };
   }
 });
@@ -210,7 +297,7 @@ var require_extractor = __commonJS({
     function toStream2(episode) {
       return {
         name: "Aniplus",
-        title: episode.title || `Episode ${episode.episodeNumber || 1}`,
+        title: `Episode ${episode.episodeNumber || 1} | ` + episode.quality,
         url: episode.link || episode.episodeLink || "empty",
         quality: episode.link || episode.quality || "Testing",
         provider: "aniplus",
@@ -227,7 +314,7 @@ var require_extractor = __commonJS({
 });
 
 // src/aniplus/index.js
-var { getTmdbData, getAnimeByName, getAnimeSeasonsByName, getEpisodesByAnimeId, getAlternativeEpisodeLink, getGDriveDirectUrl, getUrl, getTmdbEpisode, getTVDBAbsoluteEpisode, getTmdbHebrewName } = require_http();
+var { getTmdbData, getAnimeByName, getAnimeSeasonsByName, getEpisodesByAnimeId, getAlternativeEpisodeLink, getGDriveDirectUrl, getUrl, getTmdbEpisode, getTVDBAbsoluteEpisode, getTmdbHebrewName, parseM3U8Qualities, getUrlAndQualities } = require_http();
 var { toStream } = require_extractor();
 var CryptoJS = require("crypto-js");
 function getStreams(tmdbId, mediaType, season, episode) {
@@ -235,16 +322,18 @@ function getStreams(tmdbId, mediaType, season, episode) {
     const episodeItem = yield getEpisodeItem(tmdbId, mediaType, season, episode);
     if (!episodeItem)
       return [];
-    const actual_link = episodeItem.server === "googleDrive" ? yield getGDriveDirectUrl(episodeItem.link) : yield getUrl(episodeItem.link);
+    const { url: actual_link, qualities } = episodeItem.server === "googleDrive" ? { url: yield getGDriveDirectUrl(episodeItem.link), qualities: [] } : yield getUrlAndQualities(episodeItem.link);
     if (actual_link) {
       episodeItem.link = actual_link;
+      episodeItem.quality = qualities.length > 0 ? qualities[0].resolution.split("x")[1] + "p" : "Unknown quality";
       return [toStream(episodeItem)];
     }
     const alt = yield getAlternativeEpisodeLink(episodeItem.episode_id);
-    const actLink = yield getUrl(alt.episodeLink);
+    const { url: actLink, qualities: altQualities } = yield getUrlAndQualities(alt.episodeLink);
     alt.link = actLink;
     alt.title = actLink ? alt.title : "Decrypt ERR";
     alt.episodeNumber = episodeItem.episodeNumber;
+    alt.quality = altQualities.length > 0 ? altQualities[0].resolution.split("x")[1] + "p" : "Unknown quality";
     return [toStream(alt)];
   });
 }

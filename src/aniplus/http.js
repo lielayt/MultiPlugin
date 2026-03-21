@@ -154,6 +154,101 @@ async function getTVDBAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber, itemD
     }
 }
 
+async function parseM3U8Qualities(masterUrl) {
+
+    if (masterUrl.includes("google"))
+        return [] 
+
+    const res = await fetch(masterUrl, {
+        headers: {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+            "Referer": "https://anipluspro.upn.one/",
+            "Origin": "https://anipluspro.upn.one"
+        }
+    });
+    const text = await res.text();
+    const base = masterUrl.substring(0, masterUrl.lastIndexOf("/") + 1);
+
+    const qualities = [];
+    const lines = text.split("\n");
+
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith("#EXT-X-STREAM-INF")) {
+            const resMatch = lines[i].match(/RESOLUTION=(\d+x\d+)/);
+            const bwMatch  = lines[i].match(/BANDWIDTH=(\d+)/);
+            const indexUrl = lines[i + 1]?.trim();
+
+            if (indexUrl) {
+                qualities.push({
+                    resolution: resMatch?.[1] || "unknown",
+                    bandwidth:  bwMatch  ? parseInt(bwMatch[1]) : 0,
+                    url: base + indexUrl
+                });
+            }
+        }
+    }
+
+    return qualities; 
+    // [{ resolution: "1280x720", bandwidth: 1169698, url: "https://...index-f1-v1-a1.m3u8?v=..." }]
+}
+
+
+async function getUrlAndQualities(url) {
+    let resolvedUrl = null;
+
+    if (url.includes("drive.google")) {
+        resolvedUrl = await getGDriveDirectUrl(url);
+        return { url: resolvedUrl, qualities: [] };
+    }
+
+    if (url.includes("anipluspro")) {
+        const identifier = url.split("#")[1];
+        try {
+            const res = await fetch("https://aniplus.lielayt.workers.dev/aniplus?id=" + identifier);
+            const data = JSON.parse(await res.text());
+            resolvedUrl = data.tiktok || data.inhouse || data.cloudflare || null;
+        } catch (e) {
+            return { url: null, qualities: [] };
+        }
+    }
+
+    if (!resolvedUrl) return { url: null, qualities: [] };
+
+    // Fetch once, reuse for both the URL and quality parsing
+    try {
+        const res = await fetch(resolvedUrl, {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+                "Referer": "https://anipluspro.upn.one/",
+                "Origin": "https://anipluspro.upn.one"
+            }
+        });
+        const text = await res.text();
+        const base = resolvedUrl.substring(0, resolvedUrl.lastIndexOf("/") + 1);
+
+        const qualities = [];
+        const lines = text.split("\n");
+        for (let i = 0; i < lines.length; i++) {
+            if (lines[i].startsWith("#EXT-X-STREAM-INF")) {
+                const resMatch = lines[i].match(/RESOLUTION=(\d+x\d+)/);
+                const bwMatch  = lines[i].match(/BANDWIDTH=(\d+)/);
+                const indexUrl = lines[i + 1]?.trim();
+                if (indexUrl) {
+                    qualities.push({
+                        resolution: resMatch?.[1] || "unknown",
+                        bandwidth:  bwMatch ? parseInt(bwMatch[1]) : 0,
+                        url: base + indexUrl
+                    });
+                }
+            }
+        }
+
+        return { url: resolvedUrl, qualities };
+    } catch (e) {
+        return { url: resolvedUrl, qualities: [] };
+    }
+}
+
 module.exports = {
     fetchJson,
     getTmdbData,
@@ -165,5 +260,7 @@ module.exports = {
     getUrl,
     getTmdbEpisode,
     getTVDBAbsoluteEpisode,
-    getTmdbHebrewName
+    getTmdbHebrewName,
+    parseM3U8Qualities,
+    getUrlAndQualities
 };

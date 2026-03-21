@@ -1,5 +1,5 @@
 // src/aniplus/index.js
-const { getTmdbData, getAnimeByName, getAnimeSeasonsByName, getEpisodesByAnimeId, getAlternativeEpisodeLink, getGDriveDirectUrl, getUrl, getTmdbEpisode, getTVDBAbsoluteEpisode, getTmdbHebrewName} = require('./http');
+const { getTmdbData, getAnimeByName, getAnimeSeasonsByName, getEpisodesByAnimeId, getAlternativeEpisodeLink, getGDriveDirectUrl, getUrl, getTmdbEpisode, getTVDBAbsoluteEpisode, getTmdbHebrewName, parseM3U8Qualities, getUrlAndQualities} = require('./http');
 const { toStream } = require('./extractor');
 const CryptoJS = require('crypto-js');
 
@@ -7,26 +7,25 @@ const BASE_URL = "https://anipluspro.upn.one";
 
 
 async function getStreams(tmdbId, mediaType, season, episode) {
-
     const episodeItem = await getEpisodeItem(tmdbId, mediaType, season, episode);
+    if (!episodeItem) return [];
 
-    if (!episodeItem)
-        return [];
-
-    const actual_link = episodeItem.server === "googleDrive"
-        ? await getGDriveDirectUrl(episodeItem.link)
-        : await getUrl(episodeItem.link);
+    const { url: actual_link, qualities } = episodeItem.server === "googleDrive"
+        ? { url: await getGDriveDirectUrl(episodeItem.link), qualities: [] }
+        : await getUrlAndQualities(episodeItem.link);
 
     if (actual_link) {
         episodeItem.link = actual_link;
+        episodeItem.quality = qualities.length > 0 ? qualities[0].resolution.split('x')[1] + 'p' : "Unknown quality";
         return [toStream(episodeItem)];
     }
 
     const alt = await getAlternativeEpisodeLink(episodeItem.episode_id);
-    const actLink = await getUrl(alt.episodeLink);
+    const { url: actLink, qualities: altQualities } = await getUrlAndQualities(alt.episodeLink);
     alt.link = actLink;
     alt.title = actLink ? alt.title : "Decrypt ERR";
     alt.episodeNumber = episodeItem.episodeNumber;
+    alt.quality = altQualities.length > 0 ? altQualities[0].resolution.split('x')[1] + 'p' : "Unknown quality";
     return [toStream(alt)];
 }
 

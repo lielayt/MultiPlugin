@@ -4,7 +4,7 @@ function toStream(episode) {
 
     return {
         name: "Aniplus",
-        title: episode.title || `Episode ${episode.episodeNumber || 1}`,
+        title: `Episode ${episode.episodeNumber || 1}`+" | "+episode.quality ,
         url: episode.link || episode.episodeLink || "empty",
         quality: episode.link ||episode.quality || "Testing",
         provider: "aniplus",
