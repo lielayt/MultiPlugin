@@ -14,34 +14,50 @@ async function toStream(item, token, userId) {
         quality,
         provider: "emby",
         logo: "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/emby_edited.png",
-        headers:{
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
-                }
+        headers: {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
     };
 }
 
 // Search and find items by TMDb or name
 async function findMovieByTmdb(token, userId, tmdbId) {
     const url = `${EMBY_SERVER}/Users/${userId}/Items?AnyProviderIdEquals=Tmdb.${encodeURIComponent(tmdbId)}&IncludeItemTypes=Movie&Recursive=true&Limit=1&api_key=${token}`;
-    const data = await fetch(url).then(res => res.json());
+    const data = await fetch(url, {
+        headers: {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+    }).then(res => res.json());
     return data.Items && data.Items[0];
 }
 
 async function findSeriesByTmdb(token, userId, tmdbId) {
     const url = `${EMBY_SERVER}/Users/${userId}/Items?AnyProviderIdEquals=Tmdb.${encodeURIComponent(tmdbId)}&IncludeItemTypes=Series&Recursive=true&Limit=1&api_key=${token}`;
-    const data = await fetch(url).then(res => res.json());
+    const data = await fetch(url, {
+        headers: {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+    }).then(res => res.json());
     return data.Items && data.Items[0];
 }
 
 async function findEpisode(token, userId, seriesId, seasonNum, episodeNum) {
     const url = `${EMBY_SERVER}/Shows/${seriesId}/Episodes?UserId=${userId}&Season=${seasonNum}&api_key=${token}`;
-    const data = await fetch(url).then(res => res.json());
+    const data = await fetch(url, {
+        headers: {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+    }).then(res => res.json());
     return (data.Items || []).find(item => Number(item.IndexNumber) === episodeNum) || null;
 }
 
 async function searchByName(token, name) {
     const url = `${EMBY_SERVER}/emby/Items?SearchTerm=${encodeURIComponent(name)}&IncludeItemTypes=Movie,Series&Recursive=true&Limit=20&api_key=${token}`;
-    const data = await fetch(url).then(res => res.json());
+    const data = await fetch(url, {
+        headers: {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+    }).then(res => res.json());
     return data.Items && data.Items[0];
 }
 
@@ -59,9 +75,13 @@ async function getTmdbTitle(tmdbId, mediaType) {
 
 // Get playback info for quality/stream
 async function getPlaybackInfo(itemId, token, userId) {
-    const url = `${EMBY_SERVER}/emby/Items/${itemId}/PlaybackInfo?UserId=${userId}&StartTimeTicks=0&IsPlayback=false&AutoOpenLiveStream=false&X-Emby-Client=EmbyWeb&X-Emby-Device-Name=NodeJS&X-Emby-Device-Id=nodejs-1234&X-Emby-Client-Version=1.0.0&X-Emby-Token=${token}&reqformat=json`;
+    const url = `${EMBY_SERVER}/emby/Items/${itemId}/PlaybackInfo?UserId=${userId}&StartTimeTicks=0&IsPlayback=false&AutoOpenLiveStream=false&X-Emby-Client=Emby%20for%20Android%20TV&X-Emby-Device-Name=Amazon%20Fire%20TV&X-Emby-Device-Id=f47ac10b-58cc-4372-a567-0e02b2c3d479&X-Emby-Client-Version=2.0.1&X-Emby-Token=${token}&reqformat=json`;
     try {
-        const data = await fetch(url).then(res => res.json());
+        const data = await fetch(url, {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
+        }).then(res => res.json());
         const source = data?.MediaSources?.[0];
         if (!source) return null;
         return {

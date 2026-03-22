@@ -54,7 +54,8 @@ async function login(credentials) {
     const EMBY_SERVER = "https://play.embyil.tv:443";
     const headers = {
         "Content-Type": "application/json",
-        "X-Emby-Authorization": 'Emby Client="EmbyWeb", Device="Android TV", DeviceId="androidtv-1234", Version="1.0.0"'
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "X-Emby-Authorization": 'MediaBrowser Client="Emby for Android TV", Device="Amazon Fire TV", DeviceId="f47ac10b-58cc-4372-a567-0e02b2c3d479", Version="2.0.1"'
     };
 
     const res = await fetch(`${EMBY_SERVER}/Users/AuthenticateByName`, {

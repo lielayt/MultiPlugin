@@ -1,6 +1,6 @@
 /**
  * emby - Built from src/emby/
- * Generated: 2026-03-21T11:35:34.234Z
+ * Generated: 2026-03-22T21:45:51.943Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -90,7 +90,8 @@ function login(credentials) {
     const EMBY_SERVER2 = "https://play.embyil.tv:443";
     const headers = {
       "Content-Type": "application/json",
-      "X-Emby-Authorization": 'Emby Client="EmbyWeb", Device="Android TV", DeviceId="androidtv-1234", Version="1.0.0"'
+      "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      "X-Emby-Authorization": 'MediaBrowser Client="Emby for Android TV", Device="Amazon Fire TV", DeviceId="f47ac10b-58cc-4372-a567-0e02b2c3d479", Version="2.0.1"'
     };
     const res = yield fetch(`${EMBY_SERVER2}/Users/AuthenticateByName`, {
       method: "POST",
@@ -121,7 +122,7 @@ function toStream(item, token, userId) {
       provider: "emby",
       logo: "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/emby_edited.png",
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
       }
     };
   });
@@ -129,28 +130,44 @@ function toStream(item, token, userId) {
 function findMovieByTmdb(token, userId, tmdbId) {
   return __async(this, null, function* () {
     const url = `${EMBY_SERVER}/Users/${userId}/Items?AnyProviderIdEquals=Tmdb.${encodeURIComponent(tmdbId)}&IncludeItemTypes=Movie&Recursive=true&Limit=1&api_key=${token}`;
-    const data = yield fetch(url).then((res) => res.json());
+    const data = yield fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      }
+    }).then((res) => res.json());
     return data.Items && data.Items[0];
   });
 }
 function findSeriesByTmdb(token, userId, tmdbId) {
   return __async(this, null, function* () {
     const url = `${EMBY_SERVER}/Users/${userId}/Items?AnyProviderIdEquals=Tmdb.${encodeURIComponent(tmdbId)}&IncludeItemTypes=Series&Recursive=true&Limit=1&api_key=${token}`;
-    const data = yield fetch(url).then((res) => res.json());
+    const data = yield fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      }
+    }).then((res) => res.json());
     return data.Items && data.Items[0];
   });
 }
 function findEpisode(token, userId, seriesId, seasonNum, episodeNum) {
   return __async(this, null, function* () {
     const url = `${EMBY_SERVER}/Shows/${seriesId}/Episodes?UserId=${userId}&Season=${seasonNum}&api_key=${token}`;
-    const data = yield fetch(url).then((res) => res.json());
+    const data = yield fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      }
+    }).then((res) => res.json());
     return (data.Items || []).find((item) => Number(item.IndexNumber) === episodeNum) || null;
   });
 }
 function searchByName(token, name) {
   return __async(this, null, function* () {
     const url = `${EMBY_SERVER}/emby/Items?SearchTerm=${encodeURIComponent(name)}&IncludeItemTypes=Movie,Series&Recursive=true&Limit=20&api_key=${token}`;
-    const data = yield fetch(url).then((res) => res.json());
+    const data = yield fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      }
+    }).then((res) => res.json());
     return data.Items && data.Items[0];
   });
 }
@@ -170,9 +187,13 @@ function getTmdbTitle(tmdbId, mediaType) {
 function getPlaybackInfo(itemId, token, userId) {
   return __async(this, null, function* () {
     var _a, _b, _c, _d, _e, _f, _g, _h;
-    const url = `${EMBY_SERVER}/emby/Items/${itemId}/PlaybackInfo?UserId=${userId}&StartTimeTicks=0&IsPlayback=false&AutoOpenLiveStream=false&X-Emby-Client=EmbyWeb&X-Emby-Device-Name=NodeJS&X-Emby-Device-Id=nodejs-1234&X-Emby-Client-Version=1.0.0&X-Emby-Token=${token}&reqformat=json`;
+    const url = `${EMBY_SERVER}/emby/Items/${itemId}/PlaybackInfo?UserId=${userId}&StartTimeTicks=0&IsPlayback=false&AutoOpenLiveStream=false&X-Emby-Client=Emby%20for%20Android%20TV&X-Emby-Device-Name=Amazon%20Fire%20TV&X-Emby-Device-Id=f47ac10b-58cc-4372-a567-0e02b2c3d479&X-Emby-Client-Version=2.0.1&X-Emby-Token=${token}&reqformat=json`;
     try {
-      const data = yield fetch(url).then((res) => res.json());
+      const data = yield fetch(url, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+      }).then((res) => res.json());
       const source = (_a = data == null ? void 0 : data.MediaSources) == null ? void 0 : _a[0];
       if (!source)
         return null;
