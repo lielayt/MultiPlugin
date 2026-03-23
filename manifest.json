@@ -13,6 +13,31 @@
         "tv"
       ],
       "filename": "providers/emby.js",
+      "enabled": false,
+      "logo": "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/emby_edited.png",
+      "contentLanguage": [
+        "he",
+        "en"
+      ],
+      "formats": [
+        "mp4",
+        "mkv"
+      ],
+      "limited": false,
+      "disabledPlatforms": [],
+      "supportsExternalPlayer": true
+    },
+    {
+      "id": "embyworker",
+      "name": "Emby (Cloudflare)",
+      "description": "Emby provider via Cloudflare Worker",
+      "version": "1.0.1",
+      "author": "lielayt",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/embyworker.js",
       "enabled": true,
       "logo": "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/emby_edited.png",
       "contentLanguage": [
