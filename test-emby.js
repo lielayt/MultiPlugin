@@ -1,5 +1,6 @@
 const { getStreams: getAniPlus } = require('./providers/aniplus.js');
 const { getStreams: getEmby } = require('./providers/embyworker.js');
+const { getStreams: getSupabase } = require('./providers/supabase.js');
 
 // 🔹 Define test cases
 const tests = [
@@ -14,6 +15,12 @@ const tests = [
     { id: '31910', type: 'tv', season: '22', episode: '1' },
     { id: '12971', type: 'tv', season: '1', episode: '1' }
 ];
+
+const movies_test = [
+    { id: '238', type: 'movie'},
+    { id: '129', type: 'movie'},
+    { id: '680', type: 'movie'}
+]
 
 // 🔹 AniPlus bulk test
 async function testAniPlusBulk(tests) {
@@ -45,10 +52,26 @@ async function testEmbyBulk(tests) {
     }
 }
 
+// 🔹 Supabase bulk test
+async function testSupabaseBulk(tests) {
+    console.log("\n===== Supabase Tests =====");
+
+    for (const t of tests) {
+        try {
+            console.log(`\n[Supabase] Testing ${t.id} S${t.season}E${t.episode}`);
+            const streams = await getSupabase(t.id, t.type, t.season, t.episode);
+            console.log("Result:", streams);
+        } catch (e) {
+            console.error("Supabase Error:", t, e);
+        }
+    }
+}
+
 // 🔹 Run all tests sequentially
 async function runAll() {
     //await testAniPlusBulk(tests);
-    await testEmbyBulk(tests);
+    //await testEmbyBulk(tests);
+    await testSupabaseBulk(tests)
 }
 
 runAll();

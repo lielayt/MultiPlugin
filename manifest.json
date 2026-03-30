@@ -59,14 +59,40 @@
       "version": "1.0.0",
       "author": "lielayt",
       "supportedTypes": [
-        "tv",
-        "movie"
+        "movie",
+        "tv"
       ],
       "filename": "providers/aniplus.js",
       "enabled": true,
       "logo": "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/aniplus.png",
       "contentLanguage": [
         "jp",
+        "en"
+      ],
+      "formats": [
+        "m3u8",
+        "mp4",
+        "mkv"
+      ],
+      "limited": false,
+      "disabledPlatforms": [],
+      "supportsExternalPlayer": true
+    },
+    {
+      "id": "Supabase",
+      "name": "Supabase",
+      "description": "Supabase provider",
+      "version": "1.0.0",
+      "author": "lielayt",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/supabase.js",
+      "enabled": true,
+      "logo": "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/supabase.png",
+      "contentLanguage": [
+        "he",
         "en"
       ],
       "formats": [
