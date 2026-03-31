@@ -38,7 +38,7 @@
         "tv"
       ],
       "filename": "providers/embyworker.js",
-      "enabled": true,
+      "enabled": false,
       "logo": "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/emby_edited.png",
       "contentLanguage": [
         "he",
