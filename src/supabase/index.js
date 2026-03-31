@@ -14,7 +14,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
 
     try {
         // 1. Find in items table the row that tmdb_id = id sent from func arg
-        const item = await findItemByTmdb(String(tmdbId));
+        const item = await findItemByTmdb(tmdbId);
         
         if (!item) {
             console.log(`[${PROVIDER_NAME}] No item found in DB for TMDB ID: ${tmdbId}`);

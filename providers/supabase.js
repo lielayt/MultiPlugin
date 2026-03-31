@@ -1,6 +1,6 @@
 /**
  * supabase - Built from src/supabase/
- * Generated: 2026-03-31T14:58:41.435Z
+ * Generated: 2026-03-31T15:12:46.445Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -49,7 +49,7 @@ module.exports = __toCommonJS(supabase_exports);
 
 // src/supabase/http.js
 var SUPABASE_URL = "https://myhuovhvodgvqilsyvwg.supabase.co";
-var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15aHVvdmh2b2RndnFpbHN5dndnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MjE4NDUwNywiZXhwIjoyMDc3NzYwNTA3fQ.xI773iY_NqulD_qf50jlMCgYA4sitPPtgkdPb9IQdlU";
+var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15aHVvdmh2b2RndnFpbHN5dndnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxODQ1MDcsImV4cCI6MjA3Nzc2MDUwN30.zIVLAwMHVPj57MsN4nIGDq1XpvMMuf6YsO-kNJkdh4E";
 function toNumberOrNull(value) {
   if (value === null || value === void 0 || value === "")
     return null;
@@ -132,7 +132,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
     const isTv = mediaType === "tv" || mediaType === "series" || mediaType === "show" || seasonNum != null && episodeNum != null;
     console.log(`[${PROVIDER_NAME}] request tmdb=${tmdbId} mediaType=${mediaType} season=${season} episode=${episode}`);
     try {
-      const item = yield findItemByTmdb(String(tmdbId));
+      const item = yield findItemByTmdb(tmdbId);
       if (!item) {
         console.log(`[${PROVIDER_NAME}] No item found in DB for TMDB ID: ${tmdbId}`);
         return [];
