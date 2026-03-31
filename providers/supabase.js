@@ -1,6 +1,6 @@
 /**
  * supabase - Built from src/supabase/
- * Generated: 2026-03-31T15:12:46.445Z
+ * Generated: 2026-03-31T16:31:15.761Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -59,7 +59,11 @@ function toNumberOrNull(value) {
 function fetchSupabase(table, queryParams) {
   return __async(this, null, function* () {
     const url = new URL(`${SUPABASE_URL}/rest/v1/${table}`);
-    Object.keys(queryParams).forEach((key) => url.searchParams.append(key, queryParams[key]));
+    Object.entries(queryParams).forEach(([key, value]) => {
+      if (value !== void 0 && value !== null && value !== "") {
+        url.searchParams.append(key, String(value));
+      }
+    });
     if (!url.searchParams.has("select")) {
       url.searchParams.append("select", "*");
     }

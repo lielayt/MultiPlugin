@@ -13,13 +13,17 @@ function toNumberOrNull(value) {
 async function fetchSupabase(table, queryParams) {
     const url = new URL(`${SUPABASE_URL}/rest/v1/${table}`);
     
-    // Append all filters (e.g. eq.tmdb_id=123)
-    Object.keys(queryParams).forEach(key => url.searchParams.append(key, queryParams[key]));
+    Object.entries(queryParams).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+            url.searchParams.append(key, String(value)); // Always convert to string
+        }
+    });
 
-    // Default to selecting all columns if not specified
     if (!url.searchParams.has('select')) {
         url.searchParams.append('select', '*');
     }
+
+    //console.log(`[Supabase] Fetch URL: ${url.toString()}`); // Debug URL
 
     const res = await fetch(url.toString(), {
         headers: {
