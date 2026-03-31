@@ -1,6 +1,6 @@
 /**
  * supabase - Built from src/supabase/
- * Generated: 2026-03-31T11:26:40.394Z
+ * Generated: 2026-03-31T14:58:41.435Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -132,7 +132,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
     const isTv = mediaType === "tv" || mediaType === "series" || mediaType === "show" || seasonNum != null && episodeNum != null;
     console.log(`[${PROVIDER_NAME}] request tmdb=${tmdbId} mediaType=${mediaType} season=${season} episode=${episode}`);
     try {
-      const item = yield findItemByTmdb(tmdbId);
+      const item = yield findItemByTmdb(String(tmdbId));
       if (!item) {
         console.log(`[${PROVIDER_NAME}] No item found in DB for TMDB ID: ${tmdbId}`);
         return [];
