@@ -1,6 +1,6 @@
 /**
  * supabase - Built from src/supabase/
- * Generated: 2026-03-30T15:46:26.255Z
+ * Generated: 2026-03-31T11:26:40.394Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -85,9 +85,11 @@ function toStream(url, title, quality = "Auto") {
     title: title || "Direct Stream",
     url,
     quality,
-    provider: "supabasetv",
+    provider: "Supabase",
     logo: "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/supabase_logo.png",
-    headers: {}
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Linux; Android 10; Amazon) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
   };
 }
 function findItemByTmdb(tmdbId) {
@@ -150,13 +152,15 @@ function getStreams(tmdbId, mediaType, season, episode) {
           console.log(`[${PROVIDER_NAME}] Episode ${episodeNum} or video_url not found.`);
           return [];
         }
-        return [toStream(episodeData.video_url, `S${seasonNum}E${episodeNum} - ${item.name}`)];
+        let video_url2 = `https://play.embyil.tv/videos/${episodeData.id}/stream`;
+        return [toStream(video_url2, `S${seasonNum}E${episodeNum} - ${item.name}`)];
       }
       if (!item.video_url) {
         console.log(`[${PROVIDER_NAME}] No video_url found for Movie ID: ${itemId}`);
         return [];
       }
-      return [toStream(item.video_url, item.name)];
+      let video_url = `https://play.embyil.tv/videos/${item.id}/stream`;
+      return [toStream(video_url, item.name)];
     } catch (err) {
       console.error(`[${PROVIDER_NAME}] error: ${(err == null ? void 0 : err.message) || err}`);
       return [];

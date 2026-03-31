@@ -43,8 +43,8 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                 console.log(`[${PROVIDER_NAME}] Episode ${episodeNum} or video_url not found.`);
                 return []; // if not found return []
             }
-
-            return [toStream(episodeData.video_url, `S${seasonNum}E${episodeNum} - ${item.name}`)];
+            let video_url = `https://play.embyil.tv/videos/${episodeData.id}/stream`
+            return [toStream(video_url, `S${seasonNum}E${episodeNum} - ${item.name}`)];
         }
 
         // Handle Movies (Fallback if not a TV show)
@@ -53,7 +53,8 @@ async function getStreams(tmdbId, mediaType, season, episode) {
             return [];
         }
 
-        return [toStream(item.video_url, item.name)];
+        let video_url = `https://play.embyil.tv/videos/${item.id}/stream`
+        return [toStream(video_url, item.name)];
 
     } catch (err) {
         console.error(`[${PROVIDER_NAME}] error: ${err?.message || err}`);
