@@ -4,6 +4,7 @@ const SUPABASE_URL = "https://myhuovhvodgvqilsyvwg.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15aHVvdmh2b2RndnFpbHN5dndnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxODQ1MDcsImV4cCI6MjA3Nzc2MDUwN30.zIVLAwMHVPj57MsN4nIGDq1XpvMMuf6YsO-kNJkdh4E";
 
 function toNumberOrNull(value) {
+    return value
     if (value === null || value === undefined || value === "") return null;
     const n = Number(value);
     return Number.isFinite(n) ? n : null;
