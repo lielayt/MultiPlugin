@@ -86,7 +86,8 @@
       "author": "lielayt",
       "supportedTypes": [
         "movie",
-        "tv"
+        "tv",
+        "series"
       ],
       "filename": "providers/supabase.js",
       "enabled": true,
