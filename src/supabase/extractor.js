@@ -20,7 +20,7 @@ function toStream(url, title, quality = "Auto") {
 // 1. Search items table by TMDB ID
 async function findItemByTmdb(tmdbId) {
     const items = await fetchSupabase("items", {
-        "tmdb_id": `eq.${tmdbId}`,
+        "tmdb_id": `eq.${String(tmdbId)}`,
         "limit": "1"
     });
     return items && items.length > 0 ? items[0] : null;
