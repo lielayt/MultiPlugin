@@ -20,10 +20,11 @@ function toStream(url, title, quality = "Auto") {
 // 1. Search items table by TMDB ID
 async function findItemByTmdb(tmdbId) {
     const items = await fetchSupabase("items", {
-        "tmdb_id": `eq.${String(tmdbId)}`,
-        "limit": "1"
+        tmdb_id: `eq.${tmdbId}`,
+        limit: 1
     });
-    return items && items.length > 0 ? items[0] : null;
+
+    return items?.[0] ?? null;
 }
 
 // 2. Find a specific season for a show using the show's ID

@@ -1,6 +1,6 @@
 /**
  * supabase - Built from src/supabase/
- * Generated: 2026-04-07T16:47:22.957Z
+ * Generated: 2026-04-07T17:01:45.130Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -99,11 +99,12 @@ function toStream(url, title, quality = "Auto") {
 }
 function findItemByTmdb(tmdbId) {
   return __async(this, null, function* () {
+    var _a;
     const items = yield fetchSupabase("items", {
-      "tmdb_id": `eq.${String(tmdbId)}`,
-      "limit": "1"
+      tmdb_id: `eq.${tmdbId}`,
+      limit: 1
     });
-    return items && items.length > 0 ? items[0] : null;
+    return (_a = items == null ? void 0 : items[0]) != null ? _a : null;
   });
 }
 function findSeason(showId, seasonNum) {
