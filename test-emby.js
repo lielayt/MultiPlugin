@@ -14,7 +14,7 @@ const tests = [
     // { id: '37854', type: 'tv', season: '21', episode: '892' },
     // { id: '31910', type: 'tv', season: '22', episode: '1' },
     // { id: '12971', type: 'tv', season: '1', episode: '1' },
-    { id: '1100', type: 'tv', season: '1', episode: '3' }
+    { id: '37854', type: 'tv', season: '21', episode: '3' }
 ];
 
 const movies_test = [
@@ -70,9 +70,9 @@ async function testSupabaseBulk(tests) {
 
 // 🔹 Run all tests sequentially
 async function runAll() {
-    //await testAniPlusBulk(tests);
+    await testAniPlusBulk(tests);
     //await testEmbyBulk(tests);
-    await testSupabaseBulk(tests)
+    //await testSupabaseBulk(tests)
 }
 
 runAll();

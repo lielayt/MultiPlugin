@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-04-13T16:54:52.369Z
+ * Generated: 2026-04-13T21:23:52.120Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -142,48 +142,80 @@ var require_http = __commonJS({
       });
     }
     var TVDB_JWT_TOKEN = null;
-    function getTVDBAbsoluteEpisode2(tmdbId, seasonNumber, episodeNumber, itemData = null) {
+    function getTVDBAbsoluteEpisode2(tmdbId, seasonNumber, episodeNumber) {
       return __async(this, null, function* () {
         var _a;
         try {
           const extRes = yield fetch(
             `https://api.themoviedb.org/3/tv/${tmdbId}/external_ids?api_key=${TMDB_KEY}`
           );
-          if (!extRes.ok)
-            throw new Error("TMDb external_ids request failed");
+          if (!extRes.ok) {
+            console.error("TMDb external_ids failed:", extRes.status);
+            return null;
+          }
           const extData = yield extRes.json();
           const tvdbId = extData.tvdb_id;
           if (!tvdbId)
             return null;
-          if (!TVDB_JWT_TOKEN) {
-            const loginRes = yield fetch("https://api4.thetvdb.com/v4/login", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ apikey: TVDB_KEY })
+          function ensureToken() {
+            return __async(this, null, function* () {
+              var _a2;
+              if (TVDB_JWT_TOKEN)
+                return;
+              const loginRes = yield fetch("https://api4.thetvdb.com/v4/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ apikey: TVDB_KEY })
+              });
+              if (!loginRes.ok) {
+                const text = yield loginRes.text();
+                throw new Error("TVDB login failed: " + text);
+              }
+              const loginData = yield loginRes.json();
+              TVDB_JWT_TOKEN = (_a2 = loginData == null ? void 0 : loginData.data) == null ? void 0 : _a2.token;
+              if (!TVDB_JWT_TOKEN) {
+                throw new Error("TVDB token missing");
+              }
             });
-            if (!loginRes.ok) {
-              const text = yield loginRes.text();
-              throw new Error("Failed to get TVDB token: " + text);
+          }
+          yield ensureToken();
+          let res = yield fetch(
+            `https://api4.thetvdb.com/v4/series/${tvdbId}/episodes/absolute`,
+            {
+              headers: {
+                Authorization: `Bearer ${TVDB_JWT_TOKEN}`
+              }
             }
-            const loginData = yield loginRes.json();
-            TVDB_JWT_TOKEN = loginData.data.token;
-          }
-          const tvdbRes = yield fetch(`https://api4.thetvdb.com/v4/series/${tvdbId}/episodes/default`, {
-            headers: { Authorization: `Bearer ${TVDB_JWT_TOKEN}` }
-          });
-          if (!tvdbRes.ok) {
-            const text = yield tvdbRes.text();
-            console.error("TVDB ERROR:", tvdbRes.status, text);
-            return null;
-          }
-          const tvdbData = yield tvdbRes.json();
-          const episodes = ((_a = tvdbData.data) == null ? void 0 : _a.episodes) || [];
-          const ep = episodes.find(
-            (e) => e.seasonNumber === Number(seasonNumber) && e.number === Number(episodeNumber)
           );
-          return (ep == null ? void 0 : ep.absoluteNumber) || null;
-        } catch (e) {
-          console.error("Error in getAbsoluteTVDB:", e);
+          if (res.status === 401) {
+            TVDB_JWT_TOKEN = null;
+            yield ensureToken();
+            res = yield fetch(
+              `https://api4.thetvdb.com/v4/series/${tvdbId}/episodes/absolute`,
+              {
+                headers: {
+                  Authorization: `Bearer ${TVDB_JWT_TOKEN}`
+                }
+              }
+            );
+          }
+          if (!res.ok) {
+            const text = yield res.text();
+            throw new Error(`TVDB fetch failed: ${res.status} ${text}`);
+          }
+          const data = yield res.json();
+          const episodes = ((_a = data == null ? void 0 : data.data) == null ? void 0 : _a.episodes) || [];
+          let ep = episodes.find(
+            (e) => Number(e.number) === Number(episodeNumber)
+          );
+          if (!ep) {
+            ep = episodes.find(
+              (e) => Number(e.seasonNumber) === Number(seasonNumber) && Number(e.number) === Number(episodeNumber)
+            );
+          }
+          return (ep == null ? void 0 : ep.number) || (ep == null ? void 0 : ep.absoluteNumber) || null;
+        } catch (err) {
+          console.error("getTVDBAbsoluteEpisode error:", err);
           return null;
         }
       });
