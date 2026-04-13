@@ -102,104 +102,58 @@ async function getUrl(url) {
 
 let TVDB_JWT_TOKEN = null;
 
-async function getTVDBAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber) {
+async function getTVDBAbsoluteEpisode(tmdbId, seasonNumber, episodeNumber, itemData = null) {
     try {
         // 1️⃣ Get TVDB ID from TMDb
         const extRes = await fetch(
             `https://api.themoviedb.org/3/tv/${tmdbId}/external_ids?api_key=${TMDB_KEY}`
         );
-
-        if (!extRes.ok) {
-            console.error("TMDb external_ids failed:", extRes.status);
-            return null;
-        }
-
+        if (!extRes.ok) throw new Error("TMDb external_ids request failed");
         const extData = await extRes.json();
         const tvdbId = extData.tvdb_id;
         if (!tvdbId) return null;
 
         // 2️⃣ Ensure TVDB JWT token
-        async function ensureToken() {
-            if (TVDB_JWT_TOKEN) return;
-
+        if (!TVDB_JWT_TOKEN) {
             const loginRes = await fetch("https://api4.thetvdb.com/v4/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ apikey: TVDB_KEY })
             });
-
             if (!loginRes.ok) {
                 const text = await loginRes.text();
-                throw new Error("TVDB login failed: " + text);
+                throw new Error("Failed to get TVDB token: " + text);
             }
-
             const loginData = await loginRes.json();
-            TVDB_JWT_TOKEN = loginData?.data?.token;
-
-            if (!TVDB_JWT_TOKEN) {
-                throw new Error("TVDB token missing");
-            }
+            TVDB_JWT_TOKEN = loginData.data.token;
         }
 
-        await ensureToken();
+        // 3️⃣ Fetch episodes from TVDB
+        const tvdbRes = await fetch(`https://api4.thetvdb.com/v4/series/${tvdbId}/episodes/default`, {
+            headers: { Authorization: `Bearer ${TVDB_JWT_TOKEN}` }
+        });
+        if (!tvdbRes.ok) {
+            const text = await tvdbRes.text();
+            console.error("TVDB ERROR:", tvdbRes.status, text);
+            return null;
+        }
 
-        // 3️⃣ Fetch absolute episodes
-        let res = await fetch(
-            `https://api4.thetvdb.com/v4/series/${tvdbId}/episodes/absolute`,
-            {
-                headers: {
-                    Authorization: `Bearer ${TVDB_JWT_TOKEN}`
-                }
-            }
+        const tvdbData = await tvdbRes.json();
+        const episodes = tvdbData.data?.episodes || [];
+
+        // 4️⃣ Find the correct episode
+        const ep = episodes.find(
+            e => e.seasonNumber === Number(seasonNumber) && e.number === Number(episodeNumber)
         );
 
-        // 🔁 Retry if token expired
-        if (res.status === 401) {
-            TVDB_JWT_TOKEN = null;
-            await ensureToken();
+        return ep?.absoluteNumber || null;
 
-            res = await fetch(
-                `https://api4.thetvdb.com/v4/series/${tvdbId}/episodes/absolute`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${TVDB_JWT_TOKEN}`
-                    }
-                }
-            );
-        }
-
-        if (!res.ok) {
-            const text = await res.text();
-            throw new Error(`TVDB fetch failed: ${res.status} ${text}`);
-        }
-
-        const data = await res.json();
-        const episodes = data?.data?.episodes || [];
-
-        // 4️⃣ Match episode
-
-        // ✅ Absolute match (preferred)
-        let ep = episodes.find(
-            e => Number(e.number) === Number(episodeNumber)
-        );
-
-        // 🔁 Fallback: season + episode
-        if (!ep) {
-            ep = episodes.find(
-                e =>
-                    Number(e.seasonNumber) === Number(seasonNumber) &&
-                    Number(e.number) === Number(episodeNumber)
-            );
-        }
-
-        // 5️⃣ Return
-        return ep?.number || ep?.absoluteNumber || null;
-
-    } catch (err) {
-        console.error("getTVDBAbsoluteEpisode error:", err);
+    } catch (e) {
+        console.error("Error in getAbsoluteTVDB:", e);
         return null;
     }
 }
+
 async function parseM3U8Qualities(masterUrl) {
 
     if (masterUrl.includes("google"))
