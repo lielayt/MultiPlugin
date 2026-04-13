@@ -1,6 +1,6 @@
 /**
  * supabase - Built from src/supabase/
- * Generated: 2026-04-07T17:06:07.736Z
+ * Generated: 2026-04-07T17:29:07.337Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -68,7 +68,6 @@ function fetchSupabase(table, queryParams) {
     if (!url.searchParams.has("select")) {
       url.searchParams.append("select", "*");
     }
-    console.log(`[Supabase] Fetch URL: ${url.toString()}`);
     const res = yield fetch(url.toString(), {
       headers: {
         "apikey": SUPABASE_KEY,

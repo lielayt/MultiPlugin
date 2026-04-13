@@ -61,7 +61,7 @@ async function getAnimeSeasonsByName(name) {
     if (!results || !results.length) return [];
 
     return results
-        .filter(a => a.Type === "אנימה")
+        .filter(a => a.Type === "אנימה" || a.episode > 1)
         .sort((a, b) => new Date(a.date) - new Date(b.date));
 }
 

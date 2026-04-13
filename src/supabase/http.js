@@ -24,7 +24,7 @@ async function fetchSupabase(table, queryParams) {
         url.searchParams.append('select', '*');
     }
 
-    console.log(`[Supabase] Fetch URL: ${url.toString()}`); // Debug URL
+    //console.log(`[Supabase] Fetch URL: ${url.toString()}`); // Debug URL
 
     const res = await fetch(url.toString(), {
         headers: {
