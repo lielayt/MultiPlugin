@@ -1,6 +1,6 @@
 /**
  * emby - Built from src/emby/
- * Generated: 2026-03-23T07:10:26.703Z
+ * Generated: 2026-04-23T08:51:55.689Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -117,7 +117,7 @@ function toStream(item, token, userId) {
     return {
       name: "Emby",
       title: item.Name || "Emby Stream",
-      url: `${EMBY_SERVER}/Videos/${item.Id}/stream`,
+      url: `${EMBY_SERVER}/Videos/${item.Id}/stream?static=true`,
       quality,
       provider: "emby",
       logo: "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/emby_edited.png",

@@ -10,7 +10,7 @@ async function toStream(item, token, userId) {
     return {
         name: "Emby",
         title: item.Name || "Emby Stream",
-        url: `${EMBY_SERVER}/Videos/${item.Id}/stream`,
+        url: `${EMBY_SERVER}/Videos/${item.Id}/stream?static=true`,
         quality,
         provider: "emby",
         logo: "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/emby_edited.png",

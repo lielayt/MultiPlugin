@@ -7,7 +7,7 @@ function toStream(url, title, quality = "Auto") {
     return {
         name: "Supabase",
         title: title || "Direct Stream",
-        url: url,
+        url: `${url}/static=true`,
         quality: quality,
         provider: "Supabase",
         logo: "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/supabase_logo.png", 
