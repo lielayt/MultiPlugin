@@ -1,6 +1,6 @@
 /**
  * supabase - Built from src/supabase/
- * Generated: 2026-04-23T08:52:01.189Z
+ * Generated: 2026-04-23T08:58:35.559Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -88,7 +88,7 @@ function toStream(url, title, quality = "Auto") {
   return {
     name: "Supabase",
     title: title || "Direct Stream",
-    url: `${url}/static=true`,
+    url: `${url}?static=true`,
     quality,
     provider: "Supabase",
     logo: "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/supabase_logo.png",

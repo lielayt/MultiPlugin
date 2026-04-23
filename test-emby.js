@@ -70,9 +70,9 @@ async function testSupabaseBulk(tests) {
 
 // 🔹 Run all tests sequentially
 async function runAll() {
-    await testAniPlusBulk(tests);
+    //await testAniPlusBulk(tests);
     //await testEmbyBulk(tests);
-    //await testSupabaseBulk(tests)
+    await testSupabaseBulk(movies_test)
 }
 
 runAll();
