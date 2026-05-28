@@ -1,6 +1,6 @@
 /**
  * aniplus - Built from src/aniplus/
- * Generated: 2026-04-13T21:34:10.719Z
+ * Generated: 2026-05-28T15:37:24.632Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -98,7 +98,7 @@ var require_http = __commonJS({
         const results = yield fetchJson(url);
         if (!results || !results.length)
           return [];
-        return results.filter((a) => a.Type === "\u05D0\u05E0\u05D9\u05DE\u05D4" || a.episode > 1).sort((a, b) => new Date(a.date) - new Date(b.date));
+        return results.filter((a) => a.Type === "\u05D0\u05E0\u05D9\u05DE\u05D4" || a.episode > 1 || a.animeId == "809").sort((a, b) => new Date(a.date) - new Date(b.date));
       });
     }
     function getEpisodesByAnimeId2(animeId) {
