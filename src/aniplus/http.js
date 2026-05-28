@@ -61,7 +61,7 @@ async function getAnimeSeasonsByName(name) {
     if (!results || !results.length) return [];
 
     return results
-        .filter(a => a.Type === "אנימה" || a.episode > 1)
+        .filter(a => a.Type === "אנימה" || a.episode > 1 || a.animeId == "809")  // one piece id = 809
         .sort((a, b) => new Date(a.date) - new Date(b.date));
 }
 
