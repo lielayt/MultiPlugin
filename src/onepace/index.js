@@ -4,7 +4,7 @@ const SEASONS = {
     "WA": "35"
 };
 
-async function getStreams(tmdbId, mediaType, season, episode) {
+async function getStreams(tmdbId, mediaType, season=null, episode=null) {
     try {
         const [se, ep] = tmdbId.split('_');
 
