@@ -114,7 +114,8 @@
     "supportedTypes": [
       "movie",
       "tv",
-      "series"
+      "series",
+      "anime"
     ],
     "filename": "providers/onepace.js",
     "enabled": true,
