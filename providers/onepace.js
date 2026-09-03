@@ -1,6 +1,6 @@
 /**
  * onepace - Built from src/onepace/
- * Generated: 2026-09-03T12:14:53.045Z
+ * Generated: 2026-09-03T12:22:48.842Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;

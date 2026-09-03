@@ -63,7 +63,7 @@
         "tv"
       ],
       "filename": "providers/aniplus.js",
-      "enabled": true,
+      "enabled": false,
       "logo": "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/aniplus.png",
       "contentLanguage": [
         "jp",
