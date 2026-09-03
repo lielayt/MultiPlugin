@@ -1,6 +1,6 @@
 /**
  * onepace - Built from src/onepace/
- * Generated: 2026-09-03T12:22:48.842Z
+ * Generated: 2026-09-03T12:25:27.643Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
@@ -46,7 +46,7 @@ var HEADERS = {
 };
 function fetchText(_0) {
   return __async(this, arguments, function* (url, options = {}) {
-    console.log(`[Template] Fetching: ${url}`);
+    console.log(`[OnePace] Fetching: ${url}`);
     const response = yield fetch(url, __spreadValues({
       headers: __spreadValues(__spreadValues({}, HEADERS), options.headers)
     }, options));

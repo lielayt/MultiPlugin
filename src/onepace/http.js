@@ -14,7 +14,7 @@ export const HEADERS = {
  * @param {object} options 
  */
 export async function fetchText(url, options = {}) {
-    console.log(`[Template] Fetching: ${url}`);
+    console.log(`[OnePace] Fetching: ${url}`);
 
     const response = await fetch(url, {
         headers: {
