@@ -13,7 +13,7 @@
         "tv"
       ],
       "filename": "providers/emby.js",
-      "enabled": true,
+      "enabled": false,
       "logo": "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/emby_edited.png",
       "contentLanguage": [
         "he",
@@ -90,7 +90,7 @@
         "series"
       ],
       "filename": "providers/supabase.js",
-      "enabled": true,
+      "enabled": false,
       "logo": "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/supabase.png",
       "contentLanguage": [
         "he",
@@ -104,6 +104,33 @@
       "limited": false,
       "disabledPlatforms": [],
       "supportsExternalPlayer": true
-    }
+    },
+    {
+    "id": "Onepace",
+    "name": "Onepace",
+    "description": "Onepace provider",
+    "version": "1.0.0",
+    "author": "lielayt",
+    "supportedTypes": [
+      "movie",
+      "tv",
+      "series"
+    ],
+    "filename": "providers/onepace.js",
+    "enabled": true,
+    "logo": "https://raw.githubusercontent.com/lielayt/MultiPlugin/main/Assets/onepace.png",
+    "contentLanguage": [
+      "he",
+      "en"
+    ],
+    "formats": [
+      "m3u8",
+      "mp4",
+      "mkv"
+    ],
+    "limited": false,
+    "disabledPlatforms": [],
+    "supportsExternalPlayer": true
+  }
   ]
 }

@@ -1,6 +1,7 @@
 const { getStreams: getAniPlus } = require('./providers/aniplus.js');
 const { getStreams: getEmby } = require('./providers/embyworker.js');
 const { getStreams: getSupabase } = require('./providers/supabase.js');
+const { getStreams: getOnePace } = require('./providers/onepace');
 
 // 🔹 Define test cases
 const tests = [
@@ -14,6 +15,7 @@ const tests = [
     // { id: '37854', type: 'tv', season: '21', episode: '892' },
     // { id: '31910', type: 'tv', season: '22', episode: '1' },
     // { id: '12971', type: 'tv', season: '1', episode: '1' },
+    { id: '37854', type: 'tv', season: '1', episode: '1' },
     { id: '37854', type: 'tv', season: '21', episode: '3' }
 ];
 
@@ -68,11 +70,40 @@ async function testSupabaseBulk(tests) {
     }
 }
 
+async function testOnePace(id, type, season, episode) {
+    console.log("\n===== OnePace Test =====");
+
+    try {
+        console.log(`\n[OnePace] Testing ${id} S${season}E${episode}`);
+
+        const streams = await getOnePace(id, type, season, episode);
+
+        console.log(`\n[OnePace] Found ${streams.length} streams:\n`);
+
+        streams.forEach((stream, i) => {
+            console.log(`--- Stream ${i + 1} ---`);
+            console.log(`Name:     ${stream.name}`);
+            console.log(`Title:    ${stream.title}`);
+            console.log(`Quality:  ${stream.quality}`);
+            console.log(`URL:      ${stream.url}`);
+            console.log(`Headers:  ${JSON.stringify(stream.headers)}`);
+        });
+
+    } catch (e) {
+        console.error(
+            "OnePace Error:",
+            { id, type, season, episode },
+            e
+        );
+    }
+}
+
 // 🔹 Run all tests sequentially
 async function runAll() {
     //await testAniPlusBulk(tests);
     //await testEmbyBulk(tests);
-    await testSupabaseBulk(movies_test)
+    //await testSupabaseBulk(movies_test)
+    await testOnePace('WA_8', 'series', '1', '1');
 }
 
 runAll();
