@@ -1,6 +1,6 @@
 /**
  * onepace - Built from src/onepace/
- * Generated: 2026-09-03T11:21:58.685Z
+ * Generated: 2026-09-03T12:14:53.045Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
@@ -143,7 +143,7 @@ function extractStreams(season, episode) {
 var SEASONS = {
   "WA": "35"
 };
-function getStreams(tmdbId, mediaType, season, episode) {
+function getStreams(tmdbId, mediaType, season = null, episode = null) {
   return __async(this, null, function* () {
     try {
       const [se, ep] = tmdbId.split("_");
