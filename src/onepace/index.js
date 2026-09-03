@@ -4,11 +4,11 @@ const SEASONS = {
     "WA": "35"
 };
 
-async function getStreams(id, mediaType, season, episode) {
+async function getStreams(tmdbId, mediaType, season, episode) {
     try {
-        const [se, ep] = id.split('_');
+        const [se, ep] = tmdbId.split('_');
 
-        console.log(`[OnePace] Request: ${mediaType} ${id}`);
+        console.log(`[OnePace] Request: ${mediaType} ${tmdbId}`);
 
         const onePaceSeason = SEASONS[se];
 

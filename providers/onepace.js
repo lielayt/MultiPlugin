@@ -1,6 +1,6 @@
 /**
  * onepace - Built from src/onepace/
- * Generated: 2026-09-03T10:01:34.844Z
+ * Generated: 2026-09-03T11:21:58.685Z
  */
 var __defProp = Object.defineProperty;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
@@ -143,11 +143,11 @@ function extractStreams(season, episode) {
 var SEASONS = {
   "WA": "35"
 };
-function getStreams(id, mediaType, season, episode) {
+function getStreams(tmdbId, mediaType, season, episode) {
   return __async(this, null, function* () {
     try {
-      const [se, ep] = id.split("_");
-      console.log(`[OnePace] Request: ${mediaType} ${id}`);
+      const [se, ep] = tmdbId.split("_");
+      console.log(`[OnePace] Request: ${mediaType} ${tmdbId}`);
       const onePaceSeason = SEASONS[se];
       if (!onePaceSeason) {
         console.log(`[OnePace] Season not found: ${se}`);
